@@ -2,6 +2,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
+import 'package:sewa_connect/services/auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +17,9 @@ class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
+  late TextEditingController nameController;
 
+  FocusNode nameNode = FocusNode();
   FocusNode emailNode = FocusNode();
   FocusNode passwordNode = FocusNode();
   FocusNode confirmPasswordNode = FocusNode();
@@ -29,13 +32,14 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     fromKey = GlobalKey<FormState>();
+    nameController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
 
     // emailFirst();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      FocusScope.of(context).requestFocus(emailNode);
+      FocusScope.of(context).requestFocus(nameNode);
     },);
   }
 
@@ -44,6 +48,8 @@ class _RegisterPageState extends State<RegisterPage> {
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+
+    nameNode.dispose();
     emailNode.dispose();
     passwordNode.dispose();
     confirmPasswordNode.dispose();
@@ -74,6 +80,45 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: 40),
+
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextFormField(
+                    focusNode: nameNode,
+                    controller: nameController,
+                    onFieldSubmitted: (value) {
+                      FocusScope.of(context).requestFocus(emailNode);
+                    },
+
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Name is required";
+                      }
+                      if (!value.contains("@")) {
+                        return "Name is not valid";
+                      }
+                      if (!value.contains(".")) {
+                        return "Name is not valid";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: "Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 40),
 
                 Container(
@@ -163,14 +208,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       FocusScope.of(context).requestFocus(submitNode);
                     },
                     validator: (value) {
+                      if(passwordController.text != value){
+                        return "Password is not match";
+                      }
                       if (value == null || value.isEmpty) {
                         return "Password is required";
-                      }
-                      if (value.length < 8) {
-                        return "Password must be at least 8 characters long";
-                      }
-                      if(value != passwordController){
-                        return "Password is not match";
                       }
                       return null;
                     },
@@ -232,6 +274,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       if(fromKey.currentState!.validate()){
                         print("Email: ${emailController.text}");
                         print("Password: ${passwordController.text}");
+
+                        Map<String, dynamic> userDetail;
+                        // userDetail = {
+                        //   'name': emailController.text,
+                        //   'email': emailController.text,
+                        // }
+                        // Auth().signIn(userDetail: )
                       }
                     },
                     child: Text("Log In"),

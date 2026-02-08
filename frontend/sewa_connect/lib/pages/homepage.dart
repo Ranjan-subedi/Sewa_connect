@@ -58,7 +58,20 @@ class _HomepageState extends State<Homepage> {
                   )
                 ],
               ),
-            )
+            ),
+            SizedBox(height: 30,),
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Services"),
+                Text("All"),
+              ],
+            ),
+
+            SizedBox(height: 20,),
+
+            
 
 
           ],

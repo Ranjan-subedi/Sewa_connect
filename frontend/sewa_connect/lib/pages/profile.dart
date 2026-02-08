@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -77,6 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),)),),
     );
   }
 }
