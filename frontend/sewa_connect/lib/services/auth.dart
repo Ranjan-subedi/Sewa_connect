@@ -5,8 +5,13 @@ import 'package:sewa_connect/model/userModel.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
+  //postman
   // String baseUrl = "http://localhost:3000/";
-  String baseUrl = "http://10.0.2.2:3000/";
+  // emulator
+  // String baseUrl = "http://10.0.2.2:3000/";
+  // real phone
+  String baseUrl = "http://192.168.1.70:3000/";
+
 
 
 

@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
+import '../services/sharedpreferences.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -78,7 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),)),),
+      floatingActionButton: FloatingActionButton(onPressed: () async{
+        await SharedPreferencesHelper().setLoginState(state: false);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
+      } ),
     );
   }
 }
