@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
+import 'package:sewa_connect/pages/nav_bar.dart';
+import 'package:sewa_connect/services/sharedpreferences.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -10,23 +12,30 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  bool? isLoggedIn;
+
   Future splashScreen() async {
+    isLoggedIn = await SharedPreferencesHelper().getLoginState();
     await Future.delayed(const Duration(seconds: 3));
+    print(isLoggedIn);
 
     if (!mounted) {
       return;
     }
 
-    return Navigator.pushReplacement(
+    (isLoggedIn != null && isLoggedIn == true) ? Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LogInPage()),
+      MaterialPageRoute(builder: (context) => NavBar()),
+    ) : Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => LogInPage()),
     );
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    splashScreen();
+    // splashScreen();
   }
 
   @override
@@ -37,7 +46,7 @@ class _SplashPageState extends State<SplashPage> {
           decoration: BoxDecoration(color: Colors.black45),
           child: Column(
             children: [
-              Lottie.asset('assets/lottie/Girl jumping.json'),
+              Lottie.asset('assets/lottie/sandy Loading.json'),
               SizedBox(height: 20),
               Text(
                 'Sewa Connect',

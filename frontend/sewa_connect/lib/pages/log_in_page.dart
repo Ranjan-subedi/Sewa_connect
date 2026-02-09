@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/register_page.dart';
 import 'package:sewa_connect/services/auth.dart';
+import 'package:sewa_connect/services/sharedpreferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'nav_bar.dart';
 
 class LogInPage extends StatefulWidget {
@@ -14,6 +16,7 @@ class LogInPage extends StatefulWidget {
 
 class _LogInPageState extends State<LogInPage> {
   Auth auth = Auth();
+
 
   late GlobalKey<FormState> formKey;
 
@@ -197,8 +200,12 @@ class _LogInPageState extends State<LogInPage> {
                         if(!mounted){return ;}
                         print(result);
                         if(result != null) {
+
+                          await SharedPreferencesHelper().setLoginState(state: true);
+
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Login Successful')));
+
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => NavBar(),));
                         }

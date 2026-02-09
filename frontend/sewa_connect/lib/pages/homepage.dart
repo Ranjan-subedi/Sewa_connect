@@ -23,7 +23,7 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         title: Text("Sewa Connect"),
         centerTitle: true,
-        foregroundColor: Theme.of(context).colorScheme.surface,
+        // foregroundColor: Theme.of(context).colorScheme.surface,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Container(

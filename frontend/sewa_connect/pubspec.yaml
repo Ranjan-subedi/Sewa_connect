@@ -41,6 +41,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   curved_navigation_bar: ^1.0.6
   carousel_slider: ^5.1.2
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:
