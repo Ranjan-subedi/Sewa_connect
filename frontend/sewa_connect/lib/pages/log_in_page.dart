@@ -1,6 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/register_page.dart';
+import 'package:sewa_connect/services/auth.dart';
+import 'nav_bar.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -10,7 +13,9 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  late GlobalKey<FormState> fromKey;
+  Auth auth = Auth();
+
+  late GlobalKey<FormState> formKey;
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
@@ -22,7 +27,7 @@ class _LogInPageState extends State<LogInPage> {
   @override
   void initState() {
     super.initState();
-    fromKey = GlobalKey<FormState>();
+    formKey = GlobalKey<FormState>();
     emailController = TextEditingController();
     passwordController = TextEditingController();
 
@@ -55,7 +60,7 @@ class _LogInPageState extends State<LogInPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Form(
-          key: fromKey,
+          key: formKey,
           child: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(),
@@ -177,10 +182,33 @@ class _LogInPageState extends State<LogInPage> {
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       shape: RoundedRectangleBorder(),
                     ),
-                    onPressed: () {
-                      if(fromKey.currentState!.validate()){
+                    onPressed: () async {
+                      if(formKey.currentState!.validate()){
                         print("Email: ${emailController.text}");
                         print("Password: ${passwordController.text}");
+
+                        try{
+                          final result = await auth.logIn(context: context, loginDetail:  LogInModel(
+
+                            email: emailController.text.trim().toLowerCase(),
+                            password: passwordController.text.trim()
+                        ));
+
+                        if(!mounted){return ;}
+                        print(result);
+                        if(result != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Login Successful')));
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => NavBar(),));
+                        }
+                        }catch(e){
+                          if(!mounted){return ;}
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed $e')));
+                        }
+
+
+
                       }
                     },
                     child: Text("Log In"),

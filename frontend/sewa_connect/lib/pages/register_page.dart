@@ -1,6 +1,8 @@
 
+import 'package:cloudinary_flutter/video/analytics/video_analytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/services/auth.dart';
 
@@ -12,7 +14,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late GlobalKey<FormState> fromKey;
+
+  bool isLoading = false;
+  final Auth auth = Auth();
+
+  late GlobalKey<FormState> formKey;
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
@@ -31,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    fromKey = GlobalKey<FormState>();
+    formKey = GlobalKey<FormState>();
     nameController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
@@ -45,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -55,6 +62,33 @@ class _RegisterPageState extends State<RegisterPage> {
     confirmPasswordNode.dispose();
     submitNode.dispose();
     super.dispose();
+  }
+
+  registerUser()async{
+    setState(() {
+      isLoading = true;
+    });
+
+    try{
+       final  data  = UserModel(
+           name: nameController.text.trim(),
+           email: emailController.text.trim().toLowerCase(),
+           password: passwordController.text.trim());
+
+       print("email : ${data.name} \n name : ${data.name}");
+
+       await auth.signIn(registrationDetail: data);
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Register Successful')));
+
+
+
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Register failed $e')));
+    }finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -71,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Form(
-          key: fromKey,
+          key: formKey,
           child: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(),
@@ -99,12 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (value == null || value.isEmpty) {
                         return "Name is required";
                       }
-                      if (!value.contains("@")) {
-                        return "Name is not valid";
-                      }
-                      if (!value.contains(".")) {
-                        return "Name is not valid";
-                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -270,17 +299,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       shape: RoundedRectangleBorder(),
                     ),
-                    onPressed: () {
-                      if(fromKey.currentState!.validate()){
+                    onPressed: ()async {
+                      if(formKey.currentState!.validate()){
                         print("Email: ${emailController.text}");
                         print("Password: ${passwordController.text}");
 
-                        Map<String, dynamic> userDetail;
-                        // userDetail = {
-                        //   'name': emailController.text,
-                        //   'email': emailController.text,
-                        // }
-                        // Auth().signIn(userDetail: )
+                        await registerUser();
+
                       }
                     },
                     child: Text("Log In"),

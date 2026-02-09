@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:lottie/lottie.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -8,6 +10,13 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+
+  List<Widget> caurasolItems = [
+    Container(color: Colors.red,height: 200,),
+    Container(color: Colors.lightBlue,height: 200,),
+    Container(color: Colors.lightGreen,height: 200,),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,14 +30,12 @@ class _HomepageState extends State<Homepage> {
         margin: EdgeInsets.all(8),
         child: Column(
           children: [
-
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 // color: Theme.of(context).colorScheme.surface,
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -36,42 +43,58 @@ class _HomepageState extends State<Homepage> {
                   Column(
                     children: [
                       Text("Welcome"),
-                      SizedBox(height: 10,),
-                      Text('Ranjan')
+                      SizedBox(height: 10),
+                      Text('Ranjan'),
                     ],
                   ),
                   Spacer(),
                   Row(
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width*0.5,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface
-                          ),
-                          child: Icon(Icons.search)),
+                        padding: EdgeInsets.all(12),
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.search)),
+                      ),
                     ],
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(width: 10),
                   ClipRRect(
                     // borderRadius: BorderRadius.circular(50),
-                    child: Icon(Icons.person),
-                  )
+                    child: Icon(Icons.person , color: Theme.of(context).colorScheme.primary,),
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: 30,),
-            
+            SizedBox(height: 30),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Services"),
-                Text("All"),
-              ],
+              children: [Text("Services"), Text("All")],
             ),
 
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
 
-            
+            CarouselSlider(
+              items: caurasolItems.map((e) => Container(
+                margin: EdgeInsets.all(8),
+                child: e,
+              ),).toList(),
+
+
+              options: CarouselOptions(
+                  height: 250,
+                  enlargeCenterPage: true,
+                  autoPlay: true
+              ),
+            ),
 
 
           ],

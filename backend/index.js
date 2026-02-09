@@ -1,13 +1,16 @@
 const express = require('express');
 const app = express();
+
 const dotenv = require('dotenv');
 dotenv.config();
+
 const cors = require('cors');
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cors());
-const UserModel = require('./src/model/userSchema');
 
+const UserModel = require('./src/model/userSchema');
 const connectDB = require('./src/model/dbmodel');
 connectDB();
 
@@ -16,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.post('/addUser', async(req, res) => {
+app.post('/registerUser', async(req, res) => {
     const {email} = req.body;
 
     const existingUser = await UserModel.findOne({email: email});
@@ -37,6 +40,40 @@ app.post('/addUser', async(req, res) => {
         });
     }
 });
+
+app.post('/loginUser', async (req, res) => {
+    try {
+        const {email, password} = req.body;
+        
+        const existingUser = await UserModel.findOne({email: email});
+
+        if (!existingUser) {
+            return res.status(400).json({
+                message : "User not found"
+            });
+        }
+        if (existingUser.password !== password) {
+            return res.status(401).json({
+                message : "invalid password"
+            });
+        }
+        if (existingUser.password == password && existingUser.email == email) {
+             return res.status(200).json({
+                message: "LogIn Successfull",
+                _id: existingUser._id,
+                name: existingUser.name,
+                email: existingUser.email,
+                phone: existingUser.phone   
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({message : 'Server error !'});
+    }
+});
+
+
+
+
 
 
 

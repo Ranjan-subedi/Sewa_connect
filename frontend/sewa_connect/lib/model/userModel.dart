@@ -1,5 +1,34 @@
 
 
+class LogInModel{
+  final String email;
+  final String password;
+
+  LogInModel({
+    required this.email,
+    required this.password,});
+
+
+  factory LogInModel.fromjson(Map<String, dynamic> json){
+    return LogInModel(
+      email: json['email'],
+      password: json['password'],
+    );
+  }
+
+
+  Map<String, dynamic> tojson(){
+    return {
+      'email': email,
+      'password': password,
+  };
+}
+
+}
+
+
+
+
 class UserModel {
   final String name;
   final String email;
@@ -28,5 +57,5 @@ class UserModel {
       'password': password,
     };
   }
-
 }
+
