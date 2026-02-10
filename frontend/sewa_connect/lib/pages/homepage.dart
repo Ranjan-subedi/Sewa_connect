@@ -12,11 +12,19 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
 
   List<Widget> caurasolItems = [
+    Lottie.asset('assets/lottie/LoadingElephant.json'),
     Container(color: Colors.red,height: 200,),
+    Lottie.asset('assets/lottie/loadingHand.json'),
     Container(color: Colors.lightBlue,height: 200,),
+    Lottie.asset('assets/lottie/Sandy_Loading.json'),
     Container(color: Colors.lightGreen,height: 200,),
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +103,33 @@ class _HomepageState extends State<Homepage> {
                   autoPlay: true
               ),
             ),
+
+            SizedBox(height: 20,),
+
+            Text('Required Services ', style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),),
+
+            SizedBox(height: 20,),
+
+            Expanded(
+
+              child: GridView.builder(
+                padding: EdgeInsets.all(8),
+                itemCount: 14,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 2
+                    ), itemBuilder: (context, index) {
+                        return Container(
+                          height: 200,
+                          width: 200,
+                          color: Colors.deepPurple[300],
+                        );
+                      },),
+            )
 
 
           ],
