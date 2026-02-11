@@ -83,7 +83,8 @@ class _ProfilePageState extends State<ProfilePage> {
       floatingActionButton: FloatingActionButton(onPressed: () async{
         await SharedPreferencesHelper().setLoginState(state: false);
         Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
-      } ),
+      },
+      child: Icon(Icons.logout),),
     );
   }
 }
