@@ -8,6 +8,7 @@ import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/nav_bar.dart';
 import 'package:sewa_connect/pages/profile.dart';
 import 'package:sewa_connect/pages/splash_page.dart';
+import 'package:sewa_connect/pages/work_application.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AdminLogInPage(),
+      home: WorkApplicationPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,

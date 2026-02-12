@@ -15,26 +15,32 @@ class _AdminPageState extends State<AdminPage> {
       appBar: AppBar(
         title: Text("Admin Page"),
         centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        elevation: 0,
       ),
       body: Container(
-            child: Material(
-              borderRadius: BorderRadius.circular(12),
-
-              color: Colors.white,
-              child: Container(
-                height: 80,
-                child: Row(
-                  children: [
-                    Spacer(),
-                    Text("Add Worker"),
-                    Spacer(),
-                    IconButton(onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddWorkerPage(),));
-                    },icon: Icon(Icons.work)),
-                    Spacer()
-                  ],
+        margin: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Material(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  child: Container(
+                    height: 80,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text("Add Worker"),
+                        Spacer(),
+                        IconButton(onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddWorkerPage(),));
+                        },icon: Icon(Icons.work)),
+                        Spacer()
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
       ),
     );
