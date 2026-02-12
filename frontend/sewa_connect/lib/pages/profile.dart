@@ -46,12 +46,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Colors.white,
-          title: Text("Profile Page"), centerTitle: true),
-      body: Container(
+    return
+    // Scaffold(
+    //   appBar: AppBar(
+    //       backgroundColor: Theme.of(context).colorScheme.primary,
+    //       foregroundColor: Colors.white,
+    //       title: Text("Profile Page"), centerTitle: true),
+    //
+    //   body:
+      Container(
         margin: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,11 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
             Text("email: RanjanSubedi@gmail.com"),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: () async{
-        await SharedPreferencesHelper().setLoginState(state: false);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
-      } ),
-    );
+      );
+    //   floatingActionButton: FloatingActionButton(onPressed: () async{
+    //     await SharedPreferencesHelper().setLoginState(state: false);
+    //     Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
+    //   } ),
+    // );
   }
 }

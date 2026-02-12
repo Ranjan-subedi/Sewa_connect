@@ -27,14 +27,17 @@ class _HomepageState extends State<Homepage> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sewa Connect"),
-        centerTitle: true,
-        // foregroundColor: Theme.of(context).colorScheme.surface,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: Container(
+    return
+      // Scaffold(
+      // appBar: AppBar(
+      //   title: Text("Sewa Connect"),
+      //   centerTitle: true,
+      //   // foregroundColor: Theme.of(context).colorScheme.surface,
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
+      // ),
+      //
+      // body:
+      Container(
         margin: EdgeInsets.all(8),
         child: Column(
           children: [
@@ -134,7 +137,7 @@ class _HomepageState extends State<Homepage> {
 
           ],
         ),
-      ),
+      // ),
     );
   }
 }

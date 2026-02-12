@@ -13,7 +13,7 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  late List pages;
+  late List<Widget> pages;
   late Homepage homepage;
   late ProfilePage profilePage;
   late OrderServicesPage orderServicesPage;
@@ -33,11 +33,77 @@ class _NavBarState extends State<NavBar> {
       OrderServicesPage(),
       ProfilePage(),
     ];
+
+
   }
+
+  List appBarTitle = [
+  "Sewa Connect",
+  "Order Services",
+  "Profile Page",
+  ];
+
+
 
   @override
   Widget build(BuildContext context) {
+    String? appbartitle = appBarTitle[_selectedIndex] ;
     return Scaffold(
+
+      appBar: AppBar(
+        title: Text(appbartitle!),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+                accountName: Text('Ranjan Subedi'),
+                accountEmail: Text('Ranjansubedi@gmail.com'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text('R'),
+              ),
+            ),
+            // Drawer items
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Home"),
+              onTap: () {
+                Navigator.pop(context); // close drawer
+                // Navigate to home page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text("Profile"),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to profile page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to settings
+              },
+            ),
+            Divider(), // a line to separate logout
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Logout"),
+              onTap: () {
+                Navigator.pop(context);
+                // Handle logout
+              },
+            ),
+
+          ],
+        ),
+      ),
       body: pages[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.surface,

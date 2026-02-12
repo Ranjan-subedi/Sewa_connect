@@ -13,14 +13,16 @@ class _OrderServicesPageState extends State<OrderServicesPage> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        centerTitle: true,
-        title: Text('Order Services'),
-      ),
-      
-      body: Container(margin: EdgeInsets.all(16),
+    return
+      // Scaffold(
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
+      //   centerTitle: true,
+      //   title: Text('Order Services'),
+      // ),
+      // drawer: Drawer(),
+      // body:
+      Container(margin: EdgeInsets.all(16),
         child: Column(
           children: [
             Text('Select Your Order'),
@@ -52,7 +54,7 @@ class _OrderServicesPageState extends State<OrderServicesPage> {
             
           ],
         ),
-      ),
+      // ),
     );
   }
 }
