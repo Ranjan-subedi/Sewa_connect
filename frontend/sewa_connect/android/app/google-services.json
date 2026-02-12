@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966577050227",
+    "project_id": "sewaconnect-3791d",
+    "storage_bucket": "sewaconnect-3791d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966577050227:android:07e4f37704b8df4ec21006",
+        "android_client_info": {
+          "package_name": "com.example.sewa_connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtroeuyADDNG1QXEkTDkmzbxQnTySr2Lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
