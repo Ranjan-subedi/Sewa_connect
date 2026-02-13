@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sewa_connect/model/add_service_model.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -20,11 +21,19 @@ class _HomepageState extends State<Homepage> {
     Container(color: Colors.lightGreen,height: 200,),
   ];
 
+  List<AddServiceModel> services= [
+    AddServiceModel(name: 'Plumber', photo: 'https://lottie.host/821e1ebb-4de0-47ff-b6f1-92cf0c644503/5JfNofBvGA.json'),
+    AddServiceModel(name: 'Electrician', photo: "https://lottie.host/33600080-6c39-4afb-9e30-fa3da75fce5c/2Wy9mjlwB8.json"),
+    AddServiceModel(name: 'Carpenter', photo: "https://lottie.host/5db8cc07-ef43-4ef3-8df8-9f3dc3a1eb01/MKzyhOTCNC.json"),
+    AddServiceModel(name: 'Painter', photo: "https://lottie.host/9ff8ced5-98d5-4364-ae2b-37795e936c61/7yJpGXZw4m.json"),
+  ];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -86,10 +95,10 @@ class _HomepageState extends State<Homepage> {
             ),
             SizedBox(height: 30),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text("Services"), Text("All")],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [Text("Services"), Text("All")],
+            // ),
 
             SizedBox(height: 20),
 
@@ -101,7 +110,7 @@ class _HomepageState extends State<Homepage> {
 
 
               options: CarouselOptions(
-                  height: 250,
+                  height: 200,
                   enlargeCenterPage: true,
                   autoPlay: true
               ),
@@ -109,27 +118,38 @@ class _HomepageState extends State<Homepage> {
 
             SizedBox(height: 20,),
 
-            Text('Required Services ', style: TextStyle(
-              fontSize: 20,
+            Text('Services ', style: TextStyle(
+              fontSize: 24,
               fontWeight: FontWeight.bold,
             ),),
 
-            SizedBox(height: 20,),
+            // SizedBox(height: 20,),
 
             Expanded(
 
               child: GridView.builder(
                 padding: EdgeInsets.all(8),
-                itemCount: 14,
+                itemCount: services.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 2
+                      crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 12
                     ), itemBuilder: (context, index) {
+                  final  jobTitle = services[index].name;
+                  final photo = services[index].photo;
                         return Container(
                           height: 200,
                           width: 200,
-                          color: Colors.deepPurple[300],
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.deepPurple[300],
+                          ),
+                          child: Column(
+                            children: [
+                              Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
+                              Text(jobTitle),
+                            ],
+                          ),
                         );
                       },),
             )

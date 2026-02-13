@@ -107,6 +107,8 @@ class _NavBarState extends State<NavBar> {
       body: pages[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
+        buttonBackgroundColor: Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).colorScheme.primary,
         animationDuration: Duration(milliseconds: 280),
         animationCurve: Curves.ease,
         onTap: (value) {

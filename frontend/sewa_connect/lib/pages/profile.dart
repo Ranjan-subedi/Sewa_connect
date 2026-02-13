@@ -47,46 +47,54 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return
-    // Scaffold(
-    //   appBar: AppBar(
-    //       backgroundColor: Theme.of(context).colorScheme.primary,
-    //       foregroundColor: Colors.white,
-    //       title: Text("Profile Page"), centerTitle: true),
-    //
-    //   body:
       Container(
-        margin: EdgeInsets.all(16),
+        // margin: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Upload Data"),
-            Text("From and Too to Cloudaniry !"),
-            Container(
-              height: 300,
-              width: 300,
-              decoration: BoxDecoration(color: Colors.black),
-              child: profileImageUrl != null
-                  ?  Image.network(profileImageUrl!, fit: BoxFit.cover)
-                  :  InkWell(
-                onTap: () {
-                  uploadImage();
-                },
-                  child: Icon(Icons.add_a_photo_rounded, size: 45,color: Colors.white,)),
+            Expanded(
+              child: ListView(
+                children: [
+                  UserAccountsDrawerHeader(
+                    accountName: Text('Ranjan Subedi'),
+                    accountEmail: Text('Ranjansubedi@gmail.com'),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundColor: Colors.black,
+                      child: Text('R'),
+                    ),
+                  ),
+                  // Drawer items
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text("Home"),
+                    onTap: () {
+                      Navigator.pop(context); // close drawer
+                      // Navigate to home page
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text("Settings"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to settings
+                    },
+                  ),
+                  Divider(), // a line to separate logout
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text("Logout"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Handle logout
+                    },
+                  ),
+
+                ],
+              ),
             ),
-            ElevatedButton(
-              onPressed: () async{
-              },
-              child: Text("Upload"),
-            ),
-            Text("Name: Ranjan Subedi"),
-            Text("email: RanjanSubedi@gmail.com"),
           ],
         ),
       );
-    //   floatingActionButton: FloatingActionButton(onPressed: () async{
-    //     await SharedPreferencesHelper().setLoginState(state: false);
-    //     Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
-    //   } ),
-    // );
   }
 }
