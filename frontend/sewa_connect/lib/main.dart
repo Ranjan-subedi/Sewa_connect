@@ -7,6 +7,7 @@ import 'package:sewa_connect/firebase_options.dart';
 import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/nav_bar.dart';
 import 'package:sewa_connect/pages/profile.dart';
+import 'package:sewa_connect/pages/services_category.dart';
 import 'package:sewa_connect/pages/splash_page.dart';
 import 'package:sewa_connect/pages/work_application.dart';
 import 'package:sewa_connect/widget/theme.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NavBar(),
+      home: ServiceAddPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,
