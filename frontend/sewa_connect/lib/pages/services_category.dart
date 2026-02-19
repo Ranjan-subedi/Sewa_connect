@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/services/database_services.dart';
 
 class ServicesCategoryPage extends StatefulWidget {
   final String categoryId;
   final String categoryName;
 
-  ServicesCategoryPage({
+   const ServicesCategoryPage({
     required this.categoryId,
     required this.categoryName,
 });
@@ -14,6 +16,22 @@ class ServicesCategoryPage extends StatefulWidget {
 }
 
 class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
+  Stream? categoryStream;
+
+  void getOnTheLoad()async{
+    categoryStream = await DatabaseServices().getCategoryService(widget.categoryId);
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getOnTheLoad();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +46,29 @@ class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
               children: [
                 Expanded(
                   child: StreamBuilder(
-                    stream: stream,
-                    builder: (context, asyncSnapshot) {
+                    stream: categoryStream,
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text("No providers found"));
+                      }
+
+
                       return GridView.builder(
-                        itemCount: 6,
+
+                        itemCount:snapshot.data.docs.length,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             childAspectRatio: 0.7,
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
                             maxCrossAxisExtent: 300),
                           itemBuilder: (context, index) {
+
+                          DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
+
                             return Card(
                               color: Theme.of(context).colorScheme.primary.withAlpha(150),
                               child: Column(
@@ -54,7 +85,7 @@ class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
                                     ),
                                   ),
                                   SizedBox(height: 10,),
-                                  Text('Service Name')
+                                  Text(documentSnapshot["name"])
                                 ],
                               ),
                             );

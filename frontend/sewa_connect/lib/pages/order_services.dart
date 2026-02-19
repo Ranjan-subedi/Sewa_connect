@@ -4,57 +4,38 @@ class OrderServicesPage extends StatefulWidget {
   const OrderServicesPage({super.key});
 
   @override
-  State<OrderServicesPage> createState() => _OrderServicesPageState();
+  State<OrderServicesPage> createState() => _OrderServicesState();
 }
 
-class _OrderServicesPageState extends State<OrderServicesPage> {
-  List<String> service = ["Plumber","Electrician","Carpenter","Painter",];
-  String? selectedService;
-  
+class _OrderServicesState extends State<OrderServicesPage> {
   @override
   Widget build(BuildContext context) {
-    return
-      // Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).colorScheme.primary,
-      //   centerTitle: true,
-      //   title: Text('Order Services'),
-      // ),
-      // drawer: Drawer(),
-      // body:
-      Container(margin: EdgeInsets.all(16),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Details"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Select Your Order'),
-            SizedBox(height: 20,),
-
-            DropdownButtonFormField<String>(
-              hint: Text('select Service type !'),
-              value: selectedService,
-              isExpanded: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
+            Container(
+              height: 200,
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 3
+                )
               ),
-              icon: Icon(Icons.arrow_drop_down),
-              // decoration
-              items: service.map((e) {
-              return DropdownMenuItem<String>(
-                  value: e,
-                  child:Text(e),);
-            },).toList(),
-              onChanged:(value) {
-              setState(() {
-                selectedService = value ;
-                print(selectedService);
-              });
-            }, )
-
-
-            
+            )
           ],
         ),
-      // ),
+      ),
     );
   }
 }

@@ -2,6 +2,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
+import 'package:sewa_connect/pages/my_order.dart';
+import 'package:sewa_connect/pages/my_order.dart';
+import 'package:sewa_connect/pages/my_order.dart';
 import 'package:sewa_connect/pages/order_services.dart';
 import 'package:sewa_connect/pages/profile.dart';
 
@@ -16,7 +19,7 @@ class _NavBarState extends State<NavBar> {
   late List<Widget> pages;
   late Homepage homepage;
   late ProfilePage profilePage;
-  late OrderServicesPage orderServicesPage;
+  late MyOrderPage myOrderPage;
 
   int _selectedIndex = 0;
 
@@ -26,11 +29,11 @@ class _NavBarState extends State<NavBar> {
     super.initState();
     homepage = Homepage();
     profilePage = ProfilePage();
-    orderServicesPage = OrderServicesPage();
+    myOrderPage = MyOrderPage();
 
     pages = [
       Homepage(),
-      OrderServicesPage(),
+      MyOrderPage(),
       ProfilePage(),
     ];
 

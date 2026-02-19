@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/model/add_service_model.dart';
+import 'package:sewa_connect/pages/services_category.dart';
 import 'package:sewa_connect/services/database_services.dart';
 
 class Homepage extends StatefulWidget {
@@ -127,7 +128,6 @@ class _HomepageState extends State<Homepage> {
             // SizedBox(height: 20,),
 
             Expanded(
-
               child: FutureBuilder(
                   future: DatabaseServices().getAllServices(),
                   builder: (context, snapshot) {
@@ -137,44 +137,50 @@ class _HomepageState extends State<Homepage> {
                     if(!snapshot.hasData){
                       return Center(child: Text("No Data Found"),);
                     }
-                    final allservices = snapshot.data!.docs;
+                    final allServices = snapshot.data!.docs;
 
                     return
                       GridView.builder(
                       padding: EdgeInsets.all(8),
-                      itemCount: allservices.length,
+                      itemCount: allServices.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 12
                           ), itemBuilder: (context, index) {
-                        final  jobTitle = allservices[index]["name"];
-                        final photo = allservices[index]["photo"];
-                              return Container(
-                                height: 200,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.deepPurple[300],
-                                ),
-                                child: Column(
-                                  children: [
-                                    Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
-                                    Text(jobTitle),
-                                  ],
+                        final  jobTitle = allServices[index]["name"] ?? "";
+                        final photo = allServices[index]["photo"] ?? "";
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => ServicesCategoryPage(
+                                        categoryId: allServices[index].id,
+                                        categoryName: jobTitle),));
+                                },
+                                child: Container(
+                                  height: 200,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.deepPurple[300],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
+                                      Text(jobTitle),
+                                    ],
+                                  ),
                                 ),
                               );
                             },);
                   }
-    )
-
-
+                  ),
             )
 
 
           ],
         ),
       // ),
-    );
+          );
   }
 }
