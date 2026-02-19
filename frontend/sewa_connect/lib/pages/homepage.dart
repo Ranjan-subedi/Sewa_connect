@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/model/add_service_model.dart';
+import 'package:sewa_connect/services/database_services.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -21,12 +22,12 @@ class _HomepageState extends State<Homepage> {
     Container(color: Colors.lightGreen,height: 200,),
   ];
 
-  List<AddServiceModel> services= [
-    AddServiceModel(name: 'Plumber', photo: 'https://lottie.host/821e1ebb-4de0-47ff-b6f1-92cf0c644503/5JfNofBvGA.json'),
-    AddServiceModel(name: 'Electrician', photo: "https://lottie.host/33600080-6c39-4afb-9e30-fa3da75fce5c/2Wy9mjlwB8.json"),
-    AddServiceModel(name: 'Carpenter', photo: "https://lottie.host/5db8cc07-ef43-4ef3-8df8-9f3dc3a1eb01/MKzyhOTCNC.json"),
-    AddServiceModel(name: 'Painter', photo: "https://lottie.host/9ff8ced5-98d5-4364-ae2b-37795e936c61/7yJpGXZw4m.json"),
-  ];
+  // List<AddServiceModel> services= [
+  //   AddServiceModel(name: 'Plumber', photo: 'https://lottie.host/821e1ebb-4de0-47ff-b6f1-92cf0c644503/5JfNofBvGA.json'),
+  //   AddServiceModel(name: 'Electrician', photo: "https://lottie.host/33600080-6c39-4afb-9e30-fa3da75fce5c/2Wy9mjlwB8.json"),
+  //   AddServiceModel(name: 'Carpenter', photo: "https://lottie.host/5db8cc07-ef43-4ef3-8df8-9f3dc3a1eb01/MKzyhOTCNC.json"),
+  //   AddServiceModel(name: 'Painter', photo: "https://lottie.host/9ff8ced5-98d5-4364-ae2b-37795e936c61/7yJpGXZw4m.json"),
+  // ];
 
   @override
   void initState() {
@@ -127,31 +128,47 @@ class _HomepageState extends State<Homepage> {
 
             Expanded(
 
-              child: GridView.builder(
-                padding: EdgeInsets.all(8),
-                itemCount: services.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 12
-                    ), itemBuilder: (context, index) {
-                  final  jobTitle = services[index].name;
-                  final photo = services[index].photo;
-                        return Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.deepPurple[300],
-                          ),
-                          child: Column(
-                            children: [
-                              Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
-                              Text(jobTitle),
-                            ],
-                          ),
-                        );
-                      },),
+              child: FutureBuilder(
+                  future: DatabaseServices().getAllServices(),
+                  builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Center(child: CircularProgressIndicator(),);
+                    }
+                    if(!snapshot.hasData){
+                      return Center(child: Text("No Data Found"),);
+                    }
+                    final allservices = snapshot.data!.docs;
+
+                    return
+                      GridView.builder(
+                      padding: EdgeInsets.all(8),
+                      itemCount: allservices.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 12
+                          ), itemBuilder: (context, index) {
+                        final  jobTitle = allservices[index]["name"];
+                        final photo = allservices[index]["photo"];
+                              return Container(
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.deepPurple[300],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
+                                    Text(jobTitle),
+                                  ],
+                                ),
+                              );
+                            },);
+                  }
+    )
+
+
             )
 
 
