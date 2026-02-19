@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/pages/order_services.dart';
 import 'package:sewa_connect/services/database_services.dart';
 
 class ServicesCategoryPage extends StatefulWidget {
@@ -69,24 +70,30 @@ class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
 
                           DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
 
-                            return Card(
-                              color: Theme.of(context).colorScheme.primary.withAlpha(150),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: Colors.white
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => OrderServicesPage(name: documentSnapshot['name'], photo: documentSnapshot["photo"]),));
+                              },
+                              child: Card(
+                                color: Theme.of(context).colorScheme.primary.withAlpha(150),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: Colors.white
+                                        ),
+                                        child: Icon(Icons.local_laundry_service, size: MediaQuery.of(context).size.width*0.3,color: Theme.of(context).colorScheme.primary,),
                                       ),
-                                      child: Icon(Icons.local_laundry_service, size: MediaQuery.of(context).size.width*0.3,color: Theme.of(context).colorScheme.primary,),
                                     ),
-                                  ),
-                                  SizedBox(height: 10,),
-                                  Text(documentSnapshot["name"])
-                                ],
+                                    SizedBox(height: 10,),
+                                    Text(documentSnapshot["name"])
+                                  ],
+                                ),
                               ),
                             );
                           },);
