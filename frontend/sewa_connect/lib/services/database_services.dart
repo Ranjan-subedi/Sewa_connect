@@ -16,6 +16,14 @@ class DatabaseServices {
     return await firebasefirestore.collection("Services").doc(categoryId).collection("providers").snapshots();
   }
 
+  Future<void> setOrder({required Map<String, dynamic> data})async{
+    await firebasefirestore.collection("Orders").add(data);
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> myOrder(){
+    return firebasefirestore.collection("Orders").snapshots();
+  }
+
 
 
 
