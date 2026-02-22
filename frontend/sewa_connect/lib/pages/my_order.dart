@@ -13,7 +13,7 @@ class _MyOrderPageState extends State<MyOrderPage> {
   List<String> service = ["Plumber", "Electrician", "Carpenter", "Painter"];
   String? selectedService;
 
-  Stream? fetchMyAllOrder;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? fetchMyAllOrder;
 
   getOnTheLoad() async {
     fetchMyAllOrder = DatabaseServices().myOrder();
@@ -57,44 +57,60 @@ class _MyOrderPageState extends State<MyOrderPage> {
           Divider(),
           SizedBox(height: 20),
 
-          StreamBuilder(
-            stream: fetchMyAllOrder,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (!snapshot.hasData) {
-                return Center(child: Text("No Data Found"));
-              }
+          Expanded(
+            child: StreamBuilder(
+              stream: fetchMyAllOrder,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(child: Text("No Orders Found"));
+                }
+                if (!snapshot.hasData) {
+                  return Center(child: Text("No Data Found"));
+                }
 
-              final order = snapshot.data!.docs;
+                final order = snapshot.data!.docs;
 
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: order.length,
-                itemBuilder: (context, index) {
-                  final name = order[index].data()["name"] ?? "";
-                  final email = order[index].data()["email"] ?? "";
-                  return Container(
-                    margin: EdgeInsets.all(8),
-                    child: Material(
-                      color: Colors.white,
-                      child: Container(
-                        margin: EdgeInsets.all(8),
-                        child: Column(
-                          children: [Text("DATA"), Text(name), Text(email)],
+                return ListView.builder(
+                  shrinkWrap: true,
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemCount: order.length,
+                  itemBuilder: (context, index) {
+
+                    final name = order[index].data()["name"] ?? "";
+                    final email = order[index].data()["email"] ?? "";
+                    final address = order[index].data()["address"] ?? "";
+
+                    return Container(
+                      margin: EdgeInsets.all(8),
+                      child: Material(
+                        color: Theme.of(context).colorScheme.primary.withAlpha(130),
+                        borderRadius: BorderRadius.circular(12),
+                        elevation: 10,
+                        child: Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.all(8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(name),
+                              Divider(),
+                              SizedBox(height: 20,),
+                              Text(email),
+                              Text(address)],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
-      // ),
     );
   }
 }
