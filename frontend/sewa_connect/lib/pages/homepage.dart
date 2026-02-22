@@ -13,14 +13,13 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-
   List<Widget> caurasolItems = [
     Lottie.asset('assets/lottie/LoadingElephant.json'),
-    Container(color: Colors.red,height: 200,),
+    Container(color: Colors.red, height: 200),
     Lottie.asset('assets/lottie/loadingHand.json'),
-    Container(color: Colors.lightBlue,height: 200,),
+    Container(color: Colors.lightBlue, height: 200),
     Lottie.asset('assets/lottie/Sandy_Loading.json'),
-    Container(color: Colors.lightGreen,height: 200,),
+    Container(color: Colors.lightGreen, height: 200),
   ];
 
   // List<AddServiceModel> services= [
@@ -39,148 +38,159 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return
-      // Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Sewa Connect"),
-      //   centerTitle: true,
-      //   // foregroundColor: Theme.of(context).colorScheme.surface,
-      //   backgroundColor: Theme.of(context).colorScheme.primary,
-      // ),
-      //
-      // body:
-      Container(
-        margin: EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                // color: Theme.of(context).colorScheme.surface,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      Text("Welcome"),
-                      SizedBox(height: 10),
-                      Text('Ranjan'),
-                    ],
-                  ),
-                  Spacer(),
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12),
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                        ),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(Icons.search)),
+    // Scaffold(
+    // appBar: AppBar(
+    //   title: Text("Sewa Connect"),
+    //   centerTitle: true,
+    //   // foregroundColor: Theme.of(context).colorScheme.surface,
+    //   backgroundColor: Theme.of(context).colorScheme.primary,
+    // ),
+    //
+    // body:
+    Container(
+      margin: EdgeInsets.all(8),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              // color: Theme.of(context).colorScheme.surface,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Text("Welcome"),
+                    SizedBox(height: 10),
+                    Text('Ranjan'),
+                  ],
+                ),
+                Spacer(),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.4),
                       ),
-                    ],
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.search),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 10),
+                ClipRRect(
+                  // borderRadius: BorderRadius.circular(50),
+                  child: Icon(
+                    Icons.person,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  SizedBox(width: 10),
-                  ClipRRect(
-                    // borderRadius: BorderRadius.circular(50),
-                    child: Icon(Icons.person , color: Theme.of(context).colorScheme.primary,),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 30),
+          ),
+          SizedBox(height: 30),
 
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [Text("Services"), Text("All")],
-            // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [Text("Services"), Text("All")],
+          // ),
+          SizedBox(height: 20),
 
-            SizedBox(height: 20),
+          CarouselSlider(
+            items: caurasolItems
+                .map((e) => Container(margin: EdgeInsets.all(8), child: e))
+                .toList(),
 
-            CarouselSlider(
-              items: caurasolItems.map((e) => Container(
-                margin: EdgeInsets.all(8),
-                child: e,
-              ),).toList(),
-
-
-              options: CarouselOptions(
-                  height: 200,
-                  enlargeCenterPage: true,
-                  autoPlay: true
-              ),
+            options: CarouselOptions(
+              height: 200,
+              enlargeCenterPage: true,
+              autoPlay: true,
             ),
+          ),
 
-            SizedBox(height: 20,),
+          SizedBox(height: 20),
 
-            Text('Services ', style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),),
+          Text(
+            'Services ',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
 
-            // SizedBox(height: 20,),
+          // SizedBox(height: 20,),
+          Expanded(
+            child: FutureBuilder(
+              future: DatabaseServices().getAllServices(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData) {
+                  return Center(child: Text("No Data Found"));
+                }
+                final allServices = snapshot.data!.docs;
 
-            Expanded(
-              child: FutureBuilder(
-                  future: DatabaseServices().getAllServices(),
-                  builder: (context, snapshot) {
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(child: CircularProgressIndicator(),);
-                    }
-                    if(!snapshot.hasData){
-                      return Center(child: Text("No Data Found"),);
-                    }
-                    final allServices = snapshot.data!.docs;
-
-                    return
-                      GridView.builder(
-                      padding: EdgeInsets.all(8),
-                      itemCount: allServices.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 12
-                          ), itemBuilder: (context, index) {
-                        final  jobTitle = allServices[index]["name"] ?? "";
-                        final photo = allServices[index]["photo"] ?? "";
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => ServicesCategoryPage(
-                                        categoryId: allServices[index].id,
-                                        categoryName: jobTitle),));
-                                },
-                                child: Container(
-                                  height: 200,
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.deepPurple[300],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Lottie.network(photo, fit: BoxFit.cover,height: 150, width: 180),
-                                      Text(jobTitle),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },);
-                  }
+                return GridView.builder(
+                  padding: EdgeInsets.all(8),
+                  itemCount: allServices.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 12,
                   ),
-            )
-
-
-          ],
-        ),
+                  itemBuilder: (context, index) {
+                    final jobTitle = allServices[index]["name"] ?? "";
+                    final photo = allServices[index]["photo"] ?? "";
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ServicesCategoryPage(
+                              categoryId: allServices[index].id,
+                              categoryName: jobTitle,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.deepPurple[300],
+                        ),
+                        child: Column(
+                          children: [
+                            Lottie.network(
+                              photo,
+                              fit: BoxFit.cover,
+                              height: 150,
+                              width: 180,
+                            ),
+                            Text(jobTitle),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
       // ),
-          );
+    );
   }
 }
