@@ -4,7 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sewa_connect/admin/admin_login.dart';
 import 'package:sewa_connect/admin/all_order.dart';
 import 'package:sewa_connect/admin/service_add.dart';
-import 'package:sewa_connect/firebase_options.dart';
+import 'package:sewa_connect/map.dart';
+import 'package:sewa_connect/services/firebase_options.dart';
 import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/nav_bar.dart';
 import 'package:sewa_connect/pages/order_services.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AllOrderPage(),
+      home: MapPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,

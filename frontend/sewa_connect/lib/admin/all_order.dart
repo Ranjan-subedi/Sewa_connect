@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sewa_connect/services/database_services.dart';
+import 'package:sewa_connect/services/geo_locator.dart';
 
 class AllOrderPage extends StatefulWidget {
   const AllOrderPage({super.key});
@@ -63,6 +65,22 @@ class _MyOrderPageState extends State<AllOrderPage> {
             ),
       
             Divider(),
+            SizedBox(height: 20),
+            Container(
+              child: Column(
+                children: [
+                  Text("Geo Location", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                  SizedBox(height: 20,),
+
+
+                  ElevatedButton(onPressed: () async{
+                    GeoLocatorServices().getCurrentLocation();
+                  }, child: Text("Get Location")),
+
+
+                ],
+              ),
+            ),
             SizedBox(height: 20),
 
             Expanded(
