@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/services/database_services.dart';
+import 'package:sewa_connect/services/geo_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderServicesPage extends StatefulWidget {
@@ -200,13 +201,20 @@ class _OrderServicesState extends State<OrderServicesPage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
+                      onPressed: () async{
+                        final position = await GeoLocatorServices().getCurrentLocation();
+
                         DatabaseServices().setOrder(data: {
                           "name": widget.name,
                           "phone": "9864388822",
                           "address": "Pokhara",
                           "email": "email@gmail.com",
                           "photo": widget.photo,
+                          "Location" : {
+                            "latitude": position!.latitude,
+                            "longitude": position.longitude,
+                          },
+                          "status": "pending",
                           "timestamp": DateTime.now(),
                         });
                       },
