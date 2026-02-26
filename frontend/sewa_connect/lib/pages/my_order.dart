@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/map.dart';
 import 'package:sewa_connect/services/database_services.dart';
 
 class MyOrderPage extends StatefulWidget {
@@ -82,6 +84,11 @@ class _MyOrderPageState extends State<MyOrderPage> {
                     final name = order[index].data()["name"] ?? "";
                     final email = order[index].data()["email"] ?? "";
                     final address = order[index].data()["address"] ?? "";
+                    final status = order[index].data()["status"] ?? "";
+                    final location = order[index].data()["Location"] ?? "";
+
+
+
 
                     return Container(
                       margin: EdgeInsets.all(8),
@@ -99,7 +106,22 @@ class _MyOrderPageState extends State<MyOrderPage> {
                               Divider(),
                               SizedBox(height: 20,),
                               Text(email),
-                              Text(address)],
+                              Text(address),
+                              RichText(text: TextSpan(
+                                children: [
+                                  TextSpan(text: "Status : $status \n"),
+                                  TextSpan(
+                                    recognizer: TapGestureRecognizer() ..onTap = (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                        return MapPage(lat: location["latitude"], long: location["longitude"]);
+                                      },));
+                                    },
+                                      text: "See location on map"),
+
+
+                                ]
+                              ))
+                            ],
                           ),
                         ),
                       ),

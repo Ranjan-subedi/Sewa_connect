@@ -29,6 +29,12 @@ class DatabaseServices {
     return firebasefirestore.collection("Orders").snapshots();
   }
 
+
+  //For testing map only
+  Future<QuerySnapshot> getLocation()async{
+    return await firebasefirestore.collection("Orders").get();
+  }
+
   // need to be modified later for specific Users
   Stream<QuerySnapshot<Map<String, dynamic>>> myOrder(){
     return firebasefirestore.collection("Orders").snapshots();

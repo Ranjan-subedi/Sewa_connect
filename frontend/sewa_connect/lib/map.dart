@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sewa_connect/services/database_services.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  final double lat;
+  final double long;
+
+  MapPage({required this.lat, required this.long});
+
+  // const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -11,37 +17,64 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> ()async{}
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox.expand(
-        child: GoogleMap(
-          markers: {
-            Marker(
-              infoWindow: InfoWindow(title: "Current Location 1"),
-              markerId: MarkerId("Current Location"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: LatLng(28.2605, 83.9750),
-            ),
-            Marker(
-              markerId: MarkerId("Loc2"),
-              position:LatLng(29.2605, 83.9750),
-              infoWindow: InfoWindow(title: "Location 2"),
-
-
-            ),
-          },
-          mapType: MapType.hybrid,
-          initialCameraPosition: CameraPosition(
-            zoom: 13,
-            target: LatLng(28.2605, 83.9750),
-          ),
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-        ),
+      appBar: AppBar(
+        leading: IconButton(onPressed: () {
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back)),
+        title: Text("Map Page"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+            target: LatLng(widget.lat, widget.long),
+            zoom: 17
+        ),
+        markers: {
+          Marker(
+            markerId: MarkerId("destination"),
+            position: LatLng(widget.lat, widget.long),)
+        },
+      ),
+      // body: FutureBuilder(
+      //       future: DatabaseServices().getLocation(),
+      //         builder: (context,AsyncSnapshot snapshot) {
+      //           if(snapshot.connectionState == ConnectionState.waiting){
+      //       return Center(child: CircularProgressIndicator());
+      //           }
+      //           if(!snapshot.hasData){
+      //       return Center(child: Text("No Data Found"));
+      //           }
+      //
+      //           final data = snapshot.data.docs.first;
+      //           final double latitude = data["Location"]["latitude"].toDouble();
+      //           final double longitude = (data["Location"]["longitude"] as num).toDouble();
+      //
+      //           return GoogleMap(
+      //       initialCameraPosition: CameraPosition(
+      //              target: LatLng(latitude, longitude),
+      //              zoom: 15
+      //                 ),
+      //       markers: {
+      //           Marker(
+      //             markerId: MarkerId("Location"),
+      //             position: LatLng(latitude, longitude),
+      //           ),
+      //       },myLocationEnabled: true,
+      //       myLocationButtonEnabled: true,
+      //           );
+      //         },),
     );
   }
 }

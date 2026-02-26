@@ -67,8 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     leading: Icon(Icons.home),
                     title: Text("Home"),
-                    onTap: () {
-                      Navigator.pop(context); // close drawer
+                    onTap: () {// close drawer
                       // Navigate to home page
                     },
                   ),
@@ -76,7 +75,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: Icon(Icons.settings),
                     title: Text("Settings"),
                     onTap: () {
-                      Navigator.pop(context);
                       // Navigate to settings
                     },
                   ),
@@ -85,7 +83,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: Icon(Icons.logout),
                     title: Text("Logout"),
                     onTap: () {
-                      Navigator.pop(context);
                       // Handle logout
                     },
                   ),

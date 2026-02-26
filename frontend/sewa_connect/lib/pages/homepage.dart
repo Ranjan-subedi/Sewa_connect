@@ -63,9 +63,9 @@ class _HomepageState extends State<Homepage> {
               children: [
                 Column(
                   children: [
-                    Text("Welcome"),
+                    Text("Welcome",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                     SizedBox(height: 10),
-                    Text('Ranjan'),
+                    Text('Ranjan',style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                   ],
                 ),
                 Spacer(),
