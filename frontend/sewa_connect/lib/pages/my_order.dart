@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:sewa_connect/map.dart';
+import 'package:sewa_connect/pages/map.dart';
 import 'package:sewa_connect/services/database_services.dart';
 
 class MyOrderPage extends StatefulWidget {
