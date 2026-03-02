@@ -1,6 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +31,7 @@ class _CloudinaryCrudState extends State<CloudinaryCrud> {
   }
 
 
-  cloudinaryUpload()async{
+  Future cloudinaryUpload()async{
     final cloudname = dotenv.env["CLOUD_NAME"];
     print(cloudname);
     final uploadPreset = dotenv.env["UPLOAD_PRESET"];
@@ -40,11 +39,27 @@ class _CloudinaryCrudState extends State<CloudinaryCrud> {
 
     final uri = Uri.parse("https://api.cloudinary.com/v1_1/$cloudname/image/upload");
 
-    final request = http
+    final request = http.MultipartRequest("POST", uri);
 
+      // upload preset
+      request.fields["upload_preset"] = uploadPreset! ;
 
+        // image file
+        request.files.add(
+          await http.MultipartFile.fromPath('file', selectedImage!.path)
+        );
 
+        final response = await request.send();
 
+        if(response.statusCode == 200){
+          final responseData = jsonDecode(await response.stream.bytesToString());
+          setState(() {
+            cloudainaryImageUrl = responseData["secure_url"];
+          });
+          debugPrint(cloudainaryImageUrl);
+        }else{
+          debugPrint("Error occured");
+        }
   }
 
 
@@ -78,12 +93,12 @@ class _CloudinaryCrudState extends State<CloudinaryCrud> {
           Text("Here will be from Cloudainary", style: TextStyle(fontSize: 24),),
           Container(
             height: 200,
-            width: 200,
+            // width: 200,
             decoration: BoxDecoration(
               color: Colors.white30
             ),
+            child: cloudainaryImageUrl !=  null ? Image.network(cloudainaryImageUrl!, fit: BoxFit.cover,) : Container(),
           )
-
         ],
       ),
     );
