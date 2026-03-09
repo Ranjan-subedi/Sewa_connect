@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sewa_connect/services/cloudainary_services.dart';
 import 'package:sewa_connect/services/sharedpreferences.dart';
 
 class WorkApplicationPage extends StatefulWidget {
@@ -55,6 +57,23 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
     }
   }
 
+  uploadWorkApplication(String photo)async{
+    final query =await  FirebaseFirestore.instance.collection("Work Application").where("phone",isEqualTo: "9800000000").get();
+
+    if(query.docs.isEmpty){
+      await FirebaseFirestore.instance.collection("Work Application").add({
+        "name" : "Ranjan Subedi",
+        "phone" : "9800000000",
+        "job" : "Electrician",
+        "photo" : photo
+      });
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already applied")));
+    }
+
+
+  }
+
   List<String> selectjob  = ["plumber", "Electrician",];
   String? currentjobselected;
   
@@ -63,8 +82,10 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(onPressed: () {
-              
+            IconButton(onPressed: () async{
+              var photo = await CloudainaryServices().uploadImage(folderName: "WorkApplication", imageFile: image!.path);
+
+              uploadWorkApplication(photo);
             }, icon: Icon(Icons.file_upload))
           ],
         title: Text("Work Application"),

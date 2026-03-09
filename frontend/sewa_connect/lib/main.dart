@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sewa_connect/admin/add_worker.dart';
 import 'package:sewa_connect/admin/admin_login.dart';
 import 'package:sewa_connect/admin/all_order.dart';
 import 'package:sewa_connect/admin/service_add.dart';
@@ -25,12 +26,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CloudinaryCrud(),
+      home: WorkApplicationPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,
