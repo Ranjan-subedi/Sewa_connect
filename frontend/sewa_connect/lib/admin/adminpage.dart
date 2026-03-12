@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/admin/add_worker.dart';
+import 'package:sewa_connect/admin/all_accepted_order.dart';
+import 'package:sewa_connect/admin/all_order.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -35,6 +37,44 @@ class _AdminPageState extends State<AdminPage> {
                         IconButton(onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => AddWorkerPage(),));
                         },icon: Icon(Icons.work)),
+                        Spacer()
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Material(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  child: Container(
+                    height: 80,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        IconButton(onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrderPage(),));
+                        },icon: Icon(Icons.reorder_sharp)),
+                        Spacer(),
+                        Text("All Order"),
+                        Spacer()
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Material(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  child: Container(
+                    height: 80,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text("Accepted Order"),
+                        Spacer(),
+                        IconButton(onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AllAcceptedOrderPage(),));
+                        },icon: Icon(Icons.reorder_sharp)),
                         Spacer()
                       ],
                     ),

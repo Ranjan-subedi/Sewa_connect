@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
@@ -13,6 +14,10 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+
+  TextEditingController searchcontroller = TextEditingController();
+
+
   List<Widget> caurasolItems = [
     Lottie.asset('assets/lottie/LoadingElephant.json'),
     Container(color: Colors.red, height: 200),
@@ -72,7 +77,6 @@ class _HomepageState extends State<Homepage> {
                 Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(12),
                       width: MediaQuery.of(context).size.width * 0.6,
                       height: 40,
                       decoration: BoxDecoration(
@@ -82,9 +86,14 @@ class _HomepageState extends State<Homepage> {
                           context,
                         ).colorScheme.primary.withOpacity(0.4),
                       ),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.search),
+                      child: TextField(
+                        controller: searchcontroller,
+                        decoration: InputDecoration(
+                          hintText: "Search",
+                          border: InputBorder.none,
+                          suffixIcon: Icon(Icons.search)
+                        ),
+
                       ),
                     ),
                   ],
@@ -108,15 +117,22 @@ class _HomepageState extends State<Homepage> {
           // ),
           SizedBox(height: 20),
 
-          CarouselSlider(
-            items: caurasolItems
-                .map((e) => Container(margin: EdgeInsets.all(8), child: e))
-                .toList(),
+          SizedBox(
+            child : Column(
+              children: [
+                Text("Trending Services"),
+                CarouselSlider(
+                  items: caurasolItems
+                      .map((e) => Container(margin: EdgeInsets.all(8), child: e))
+                      .toList(),
 
-            options: CarouselOptions(
-              height: 200,
-              enlargeCenterPage: true,
-              autoPlay: true,
+                  options: CarouselOptions(
+                    height: 200,
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                  ),
+                ),
+              ],
             ),
           ),
 

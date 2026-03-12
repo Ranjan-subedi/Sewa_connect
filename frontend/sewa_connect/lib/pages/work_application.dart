@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
@@ -15,6 +16,10 @@ class WorkApplicationPage extends StatefulWidget {
 }
 
 class _WorkApplicationPageState extends State<WorkApplicationPage> {
+  late TextEditingController famousName;
+  late TextEditingController phoneNumber;
+
+
   File? image;
   bool isUploading = false;
 
@@ -27,11 +32,14 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
       });
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getSharedImage();
+    famousName = TextEditingController();
+    phoneNumber = TextEditingController();
   }
 
   final imagepicker = ImagePicker();
@@ -57,15 +65,22 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
     }
   }
 
-  uploadWorkApplication(String photo)async{
-    final query =await  FirebaseFirestore.instance.collection("Work Application").where("phone",isEqualTo: "9800000000").get();
+  uploadWorkApplication(String applicantPhoto)async{
+    final query =await  FirebaseFirestore.instance.collection("Work Application").where("phone",isEqualTo: phoneNumber.text).get();
 
     if(query.docs.isEmpty){
       await FirebaseFirestore.instance.collection("Work Application").add({
-        "name" : "Ranjan Subedi",
-        "phone" : "9800000000",
-        "job" : "Electrician",
-        "photo" : photo
+        "userId": FirebaseAuth.instance.currentUser!.uid,
+        "name" : famousName.text.trim(),
+        "phone" : phoneNumber.text.trim(),
+        "job" : currentjobselected,
+        "applicantPhoto" : applicantPhoto,
+        "status" : "pending",
+        "specialCertificate": "Certificate Photo",
+        "citizenshipFront": "CitizenShip Front Photo",
+        "citizenshipBack": "CitizenShip Back Photo",
+        "applicationDate" : DateTime.now(),
+
       });
     }else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already applied")));
@@ -76,6 +91,14 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
 
   List<String> selectjob  = ["plumber", "Electrician",];
   String? currentjobselected;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    famousName.dispose();
+    phoneNumber.dispose();
+    super.dispose();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -83,9 +106,10 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
         appBar: AppBar(
           actions: [
             IconButton(onPressed: () async{
-              var photo = await CloudainaryServices().uploadImage(folderName: "WorkApplication", imageFile: image!.path);
+              var applicantPhoto = await CloudainaryServices().
+                 uploadImage(folderName: "WorkApplication", imageFile: image!.path);
 
-              uploadWorkApplication(photo);
+              uploadWorkApplication(applicantPhoto);
             }, icon: Icon(Icons.file_upload))
           ],
         title: Text("Work Application"),
@@ -159,6 +183,7 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
               Text('Calling Name'),
               TextField(
                 autofocus: true,
+                controller: famousName,
                 decoration: InputDecoration(
                   hintText: "Tyre Kanxa",
                   labelText: "Enter your famous name",
@@ -175,6 +200,8 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
 
               Text('Phone Number'),
               TextField(
+                keyboardType: TextInputType.number,
+                controller: phoneNumber,
                 decoration: InputDecoration(
                   hintText: "9800000000",
                   labelText: "Your working number",

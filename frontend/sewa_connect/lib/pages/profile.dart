@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
+import '../provider/dashboard.dart';
 import '../services/sharedpreferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -76,6 +79,29 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: Text("Settings"),
                     onTap: () {
                       // Navigate to settings
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.switch_right_outlined),
+                    title: Text("Switch my role"),
+                    onTap: ()async {
+                      // Navigate to settings
+                      final uid = FirebaseAuth.instance.currentUser!.uid;
+
+                      final userDoc = await FirebaseFirestore.instance
+                          .collection("Users")
+                          .doc(uid)
+                          .get();
+
+                      String role = userDoc["role"];
+
+                      if(role == "provider"){
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => ProviderDashboardPage()));
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("You are not a verified provider")));
+                      }
                     },
                   ),
                   Divider(), // a line to separate logout

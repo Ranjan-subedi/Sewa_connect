@@ -26,9 +26,22 @@ class DatabaseServices {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allOrder(){
-    return firebasefirestore.collection("Orders").snapshots();
+    return firebasefirestore.collection("Orders").where("status", isEqualTo: "pending").snapshots();
   }
 
+  void updateStatus(String docId)async{
+    DocumentSnapshot orderDoc = await firebasefirestore.collection("Orders").doc(docId).get();
+
+    Map<String, dynamic> data = orderDoc.data() as Map<String, dynamic>;
+     data["status"]= "accepted" ;
+
+    await firebasefirestore
+        .collection("Accepted Services")
+        .doc(docId)
+        .set(data);
+
+    await firebasefirestore.collection("Orders").doc(docId).delete();
+  }
 
   //For testing map only
   Future<QuerySnapshot> getLocation()async{
@@ -38,6 +51,10 @@ class DatabaseServices {
   // need to be modified later for specific Users
   Stream<QuerySnapshot<Map<String, dynamic>>> myOrder(){
     return firebasefirestore.collection("Orders").snapshots();
+  }
+
+  Stream<QuerySnapshot> addWorker(){
+    return firebasefirestore.collection("Work Application").where("status", isEqualTo: "pending").snapshots();
   }
 
 

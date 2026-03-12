@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class RequestProfileage extends StatefulWidget {
+class RequestProfilePage extends StatefulWidget {
+  final String name;
+  final String job;
+  final String image;
+
+  const RequestProfilePage({required this.name, required this.job, required this.image});
 
 
   @override
-  State<RequestProfileage> createState() => _RequestProfilePageState();
+  State<RequestProfilePage> createState() => _RequestProfilePageState();
 }
 
-class _RequestProfilePageState extends State<RequestProfileage> {
+class _RequestProfilePageState extends State<RequestProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +39,13 @@ class _RequestProfilePageState extends State<RequestProfileage> {
                     width: 2
                   )
                 ),
-                child: Lottie.asset('assets/lottie/LoadingElephant.json'),
+                child:widget.image == "" ? 
+                Lottie.asset('assets/lottie/LoadingElephant.json') :
+                    Image.network(widget.image,fit: BoxFit.cover,)
+                ,
               ),
               SizedBox(height: 20,),
-              Text('Plumber man', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+              Text(widget.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
               Text('I am good plumber with 5 years experience. I have got certificate of level 3 CTEVT ', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),),
               SizedBox(height: 20,),
               Text('Citizen Ship Card(front)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),

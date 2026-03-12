@@ -43,44 +43,6 @@ class _MyOrderPageState extends State<AllOrderPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            DropdownButtonFormField<String>(
-              hint: Text('select Service type !'),
-              value: selectedService,
-              isExpanded: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
-              ),
-              icon: Icon(Icons.arrow_drop_down),
-              // decoration
-              items: service.map((e) {
-                return DropdownMenuItem<String>(value: e, child: Text(e));
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedService = value;
-                  print(selectedService);
-                });
-              },
-            ),
-      
-            Divider(),
-            SizedBox(height: 20),
-            Container(
-              child: Column(
-                children: [
-                  Text("Geo Location", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                  SizedBox(height: 20,),
-
-
-                  ElevatedButton(onPressed: () async{
-                    GeoLocatorServices().getCurrentLocation();
-                  }, child: Text("Get Location")),
-
-
-                ],
-              ),
-            ),
             SizedBox(height: 20),
 
             Expanded(
@@ -104,7 +66,7 @@ class _MyOrderPageState extends State<AllOrderPage> {
                       final order = snapshot.data!.docs;
 
                       return ListView.builder(
-                        // shrinkWrap: true,
+                        shrinkWrap: true,
                         // physics: NeverScrollableScrollPhysics(),
                         itemCount: order.length,
                         itemBuilder: (context, index) {
@@ -139,9 +101,13 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                             backgroundColor: Theme.of(context).colorScheme.secondary.withAlpha(150),
                                             foregroundColor: Theme.of(context).colorScheme.primary
                                           ),
-                                          onPressed: () {
+                                          onPressed: () async{
+                                            final orderId = order[index].id;
 
+                                            DatabaseServices().updateStatus(orderId);
                                       }, child: Text("Accept")),
+
+
                                       OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                               backgroundColor: Colors.red[300],

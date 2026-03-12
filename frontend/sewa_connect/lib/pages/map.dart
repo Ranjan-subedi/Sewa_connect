@@ -37,6 +37,7 @@ class _MapPageState extends State<MapPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: GoogleMap(
+        mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
             target: LatLng(widget.lat, widget.long),
             zoom: 17
@@ -47,34 +48,6 @@ class _MapPageState extends State<MapPage> {
             position: LatLng(widget.lat, widget.long),)
         },
       ),
-      // body: FutureBuilder(
-      //       future: DatabaseServices().getLocation(),
-      //         builder: (context,AsyncSnapshot snapshot) {
-      //           if(snapshot.connectionState == ConnectionState.waiting){
-      //       return Center(child: CircularProgressIndicator());
-      //           }
-      //           if(!snapshot.hasData){
-      //       return Center(child: Text("No Data Found"));
-      //           }
-      //
-      //           final data = snapshot.data.docs.first;
-      //           final double latitude = data["Location"]["latitude"].toDouble();
-      //           final double longitude = (data["Location"]["longitude"] as num).toDouble();
-      //
-      //           return GoogleMap(
-      //       initialCameraPosition: CameraPosition(
-      //              target: LatLng(latitude, longitude),
-      //              zoom: 15
-      //                 ),
-      //       markers: {
-      //           Marker(
-      //             markerId: MarkerId("Location"),
-      //             position: LatLng(latitude, longitude),
-      //           ),
-      //       },myLocationEnabled: true,
-      //       myLocationButtonEnabled: true,
-      //           );
-      //         },),
     );
   }
 }

@@ -121,7 +121,7 @@ class _NavBarState extends State<NavBar> {
         },
           items: [
             Icon(Icons.home),
-            Icon(Icons.search),
+            Icon(Icons.miscellaneous_services_rounded),
             Icon(Icons.person),
           ],
           ),
