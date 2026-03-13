@@ -31,7 +31,6 @@ class DatabaseServices {
 
   void updateStatus(String docId)async{
     DocumentSnapshot orderDoc = await firebasefirestore.collection("Orders").doc(docId).get();
-
     Map<String, dynamic> data = orderDoc.data() as Map<String, dynamic>;
      data["status"]= "accepted" ;
 
@@ -39,7 +38,6 @@ class DatabaseServices {
         .collection("Accepted Services")
         .doc(docId)
         .set(data);
-
     await firebasefirestore.collection("Orders").doc(docId).delete();
   }
 
@@ -51,6 +49,10 @@ class DatabaseServices {
   // need to be modified later for specific Users
   Stream<QuerySnapshot<Map<String, dynamic>>> myOrder(){
     return firebasefirestore.collection("Orders").snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> allAcceptedOrder(){
+    return firebasefirestore.collection("Accepted Services").snapshots();
   }
 
   Stream<QuerySnapshot> addWorker(){

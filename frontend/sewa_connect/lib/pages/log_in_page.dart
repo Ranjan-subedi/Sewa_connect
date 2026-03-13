@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/register_page.dart';
 import 'package:sewa_connect/services/auth.dart';
+import 'package:sewa_connect/services/firebase_auth.dart';
 import 'package:sewa_connect/services/sharedpreferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'nav_bar.dart';
@@ -191,24 +193,49 @@ class _LogInPageState extends State<LogInPage> {
                         print("Password: ${passwordController.text}");
 
                         try{
-                          final result = await auth.logIn(context: context, loginDetail:  LogInModel(
+                          final response = await FirebaseAuthServices().login
+                            (
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim()
+                          );
+                          if(response == null){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Login Successful'))
+                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => NavBar())
+                            );
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(response))
+                            );
+                          }
 
-                            email: emailController.text.trim().toLowerCase(),
-                            password: passwordController.text.trim()
-                        ));
 
-                        if(!mounted){return ;}
-                        print(result);
-                        if(result != null) {
 
-                          await SharedPreferencesHelper().setLoginState(state: true);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Login Successful')));
 
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => NavBar(),));
-                        }
+                        //
+                        //   final result = await auth.logIn(context: context, loginDetail:  LogInModel(
+                        //
+                        //     email: emailController.text.trim().toLowerCase(),
+                        //     password: passwordController.text.trim()
+                        // ));
+                        //
+                        // if(!mounted){return ;}
+                        // print(result);
+                        // if(result != null) {
+                        //
+                        //   await SharedPreferencesHelper().setLoginState(state: true);
+                        //
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(content: Text('Login Successful')));
+                        //
+                        //   Navigator.push(context, MaterialPageRoute(
+                        //     builder: (context) => NavBar(),));
+                        // }
+
                         }catch(e){
                           if(!mounted){return ;}
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed $e')));

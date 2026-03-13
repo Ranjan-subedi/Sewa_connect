@@ -76,6 +76,7 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
         "job" : currentjobselected,
         "applicantPhoto" : applicantPhoto,
         "status" : "pending",
+        "verified": false,
         "specialCertificate": "Certificate Photo",
         "citizenshipFront": "CitizenShip Front Photo",
         "citizenshipBack": "CitizenShip Back Photo",

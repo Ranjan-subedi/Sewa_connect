@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/services/auth.dart';
+import 'package:sewa_connect/services/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -89,6 +90,14 @@ class _RegisterPageState extends State<RegisterPage> {
         isLoading = false;
       });
     }
+  }
+
+  firebaseRegister()async{
+    FirebaseAuthServices().register
+      (
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim());
   }
 
   @override
@@ -304,11 +313,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         print("Email: ${emailController.text}");
                         print("Password: ${passwordController.text}");
 
-                        await registerUser();
+                        // await registerUser();
 
+                        await firebaseRegister();
                       }
                     },
-                    child: Text("Log In"),
+                    child: Text("Register"),
                   ),
                 ),
               ],

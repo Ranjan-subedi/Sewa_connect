@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
+import 'package:sewa_connect/pages/work_application.dart';
 import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
 import '../provider/dashboard.dart';
@@ -79,6 +80,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: Text("Settings"),
                     onTap: () {
                       // Navigate to settings
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.work),
+                    title: Text("Work Application"),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => WorkApplicationPage(),));
                     },
                   ),
                   ListTile(
