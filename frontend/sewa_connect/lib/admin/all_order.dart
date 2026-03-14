@@ -113,8 +113,21 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                               backgroundColor: Colors.red[300],
                                               foregroundColor: Theme.of(context).colorScheme.primary
                                           ),
-                                          onPressed: () {
-                                            DatabaseServices().deleteOrder(orderId: order[index].id);
+                                          onPressed: ()async{
+                                            final orderId = order[index].id;
+
+                                            DocumentSnapshot snapshot = await
+                                            FirebaseFirestore
+                                                .instance
+                                            .collection("Orders").doc(orderId).get();
+
+                                            final orderData = snapshot.data();
+                                            final status = orderData!["status"];
+
+                                            await FirebaseFirestore.instance.collection("Orders").doc(orderId).set(status);
+
+
+                                            // DatabaseServices().deleteOrder(orderId: order[index].id);
                                       }, child: Text("Reject")),
                                     ],
                                   )
@@ -134,4 +147,8 @@ class _MyOrderPageState extends State<AllOrderPage> {
       ),
     );
   }
+}
+
+extension on Object {
+  operator [](String other) {}
 }

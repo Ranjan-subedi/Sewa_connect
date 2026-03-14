@@ -1,12 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/video/analytics/video_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class RequestProfilePage extends StatefulWidget {
   final String name;
+  final String phone;
   final String job;
   final String image;
+  final String docId;
 
-  const RequestProfilePage({required this.name, required this.job, required this.image});
+  const RequestProfilePage(
+      {required this.docId,
+        required this.name,
+        required this.phone,
+        required this.job,
+        required this.image
+      });
 
 
   @override
@@ -14,6 +24,44 @@ class RequestProfilePage extends StatefulWidget {
 }
 
 class _RequestProfilePageState extends State<RequestProfilePage> {
+
+
+  Future<void> acceptApplication({required String docId, required String phone})async{
+    FirebaseFirestore firestore = await FirebaseFirestore.instance;
+
+    DocumentSnapshot profile = await firestore.collection("Work Application").doc(docId).get();
+
+    Map<String, dynamic> workerData = profile.data() as Map<String, dynamic>;
+    String job = workerData["job"];
+
+    await firestore.collection("Services").doc(job).collection("providers").doc(phone).set(
+        {
+          "name": workerData["name"],
+          "phone": workerData["phone"],
+          "phone": workerData["phone"],
+          "photo": workerData["photo"] ?? "",
+          "verified": true,
+          "verifiedAt": Timestamp.now(),
+        }
+    );
+
+    await firestore.collection("Work Application").doc(docId).update({"verified": "true", "status": "accepted"});
+
+
+
+  }
+
+  Future<void> rejectApplication({required String docId})async{
+    FirebaseFirestore firestore = await FirebaseFirestore.instance;
+
+    await firestore.collection("Work Application").doc(docId).update({"status": "rejected"});
+
+    Future.delayed(Duration(days: 1), () async {
+      await firestore.collection("Work Application").doc(docId).delete();
+    },);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,23 +151,34 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width*0.4,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withAlpha(200),
-                      borderRadius: BorderRadius.circular(8)
-                    ),
-                    child: Icon(Icons.trending_up_sharp),
-                  ),
-                  Container(
+                  InkWell(
+                    onTap: () {
+                      acceptApplication(docId: widget.docId, phone: widget.phone);
+                    },
+                    child: Container(
                       height: 50,
                       width: MediaQuery.of(context).size.width*0.4,
                       decoration: BoxDecoration(
-                          color: Colors.red.withAlpha(150),
-                          borderRadius: BorderRadius.circular(8)
+                        color: Theme.of(context).colorScheme.secondary.withAlpha(200),
+                        borderRadius: BorderRadius.circular(8)
                       ),
-                    child: Icon(Icons.crop_square_sharp),
+                      child: Icon(Icons.offline_pin),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      rejectApplication(docId: widget.docId);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width*0.4,
+                        decoration: BoxDecoration(
+                            color: Colors.red.withAlpha(150),
+                            borderRadius: BorderRadius.circular(8)
+                        ),
+                      child: Icon(Icons.crop_square_sharp),
+                    ),
                   )
                 ],
               )

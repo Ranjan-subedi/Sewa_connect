@@ -38,7 +38,7 @@ class DatabaseServices {
         .collection("Accepted Services")
         .doc(docId)
         .set(data);
-    await firebasefirestore.collection("Orders").doc(docId).delete();
+    // await firebasefirestore.collection("Orders").doc(docId).delete();
   }
 
   //For testing map only
@@ -46,9 +46,8 @@ class DatabaseServices {
     return await firebasefirestore.collection("Orders").get();
   }
 
-  // need to be modified later for specific Users
-  Stream<QuerySnapshot<Map<String, dynamic>>> myOrder(){
-    return firebasefirestore.collection("Orders").snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> myOrder({required String email}){
+    return firebasefirestore.collection("Orders").where("email", isEqualTo: email).snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allAcceptedOrder(){
@@ -56,7 +55,10 @@ class DatabaseServices {
   }
 
   Stream<QuerySnapshot> addWorker(){
-    return firebasefirestore.collection("Work Application").where("status", isEqualTo: "pending").snapshots();
+    return firebasefirestore
+        .collection("Work Application")
+        // .where("status", isEqualTo: "pending")
+        .snapshots();
   }
 
 

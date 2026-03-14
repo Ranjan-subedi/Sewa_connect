@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/services/database_services.dart';
 import 'package:sewa_connect/services/geo_locator.dart';
+import 'package:sewa_connect/services/sharedpreferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderServicesPage extends StatefulWidget {
@@ -18,6 +19,15 @@ class OrderServicesPage extends StatefulWidget {
 }
 
 class _OrderServicesState extends State<OrderServicesPage> {
+
+  String? email;
+
+  getSharedPrefs()async{
+    email = await SharedPreferencesHelper().getEmail();
+    setState(() {
+      print(email);
+    });
+  }
 
   Future<void> makePhoneCall(String phoneNumber)async{
     final Uri url = Uri(scheme: "tel" , path: phoneNumber);
@@ -37,6 +47,13 @@ class _OrderServicesState extends State<OrderServicesPage> {
     }
 
 
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSharedPrefs();
   }
 
   @override
@@ -208,7 +225,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
                           "name": widget.name,
                           "phone": "9864388822",
                           "address": "Pokhara",
-                          "email": "email@gmail.com",
+                          "email": email,
                           "photo": widget.photo,
                           "Location" : {
                             "latitude": position!.latitude,

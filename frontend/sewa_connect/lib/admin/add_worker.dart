@@ -65,12 +65,16 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
                       ),
                       itemBuilder: (context, index) {
                       final name = workApplication[index]["name"];
+                      final phone = workApplication[index]["phone"];
                       final image = workApplication[index]["applicantPhoto"];
                       final job = workApplication[index]["job"];
+                      final docId = workApplication[index].id;
                       return InkWell(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) =>
                               RequestProfilePage(
+                                phone: phone,
+                                docId: docId,
                                 name: name,
                                 image: image,
                                 job: job,

@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/pages/map.dart';
 import 'package:sewa_connect/services/database_services.dart';
+import 'package:sewa_connect/services/sharedpreferences.dart';
 
 class MyOrderPage extends StatefulWidget {
   const MyOrderPage({super.key});
@@ -12,13 +13,26 @@ class MyOrderPage extends StatefulWidget {
 }
 
 class _MyOrderPageState extends State<MyOrderPage> {
-  List<String> service = ["Plumber", "Electrician", "Carpenter", "Painter"];
-  String? selectedService;
+  // List<String> service = ["Plumber", "Electrician", "Carpenter", "Painter"];
+  // String? selectedService;
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? fetchMyAllOrder;
 
-  getOnTheLoad() async {
-    fetchMyAllOrder = DatabaseServices().myOrder();
+  String? email;
+
+   getSharedPreferences()async{
+    email = await SharedPreferencesHelper().getEmail();
+    print(email);
+    setState(() {
+
+    });
+  }
+
+
+   getOnTheLoad() async {
+    await getSharedPreferences();
+    print(email);
+    fetchMyAllOrder =  DatabaseServices().myOrder(email: email.toString());
     setState(() {});
   }
 
@@ -35,28 +49,28 @@ class _MyOrderPageState extends State<MyOrderPage> {
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          DropdownButtonFormField<String>(
-            hint: Text('select Service type !'),
-            value: selectedService,
-            isExpanded: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.all(12),
-            ),
-            icon: Icon(Icons.arrow_drop_down),
-            // decoration
-            items: service.map((e) {
-              return DropdownMenuItem<String>(value: e, child: Text(e));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedService = value;
-                print(selectedService);
-              });
-            },
-          ),
+          // DropdownButtonFormField<String>(
+          //   hint: Text('select Service type !'),
+          //   value: selectedService,
+          //   isExpanded: true,
+          //   decoration: InputDecoration(
+          //     border: OutlineInputBorder(),
+          //     contentPadding: EdgeInsets.all(12),
+          //   ),
+          //   icon: Icon(Icons.arrow_drop_down),
+          //   // decoration
+          //   items: service.map((e) {
+          //     return DropdownMenuItem<String>(value: e, child: Text(e));
+          //   }).toList(),
+          //   onChanged: (value) {
+          //     setState(() {
+          //       selectedService = value;
+          //       print(selectedService);
+          //     });
+          //   },
+          // ),
 
-          Divider(),
+          // Divider(),
           SizedBox(height: 20),
 
           Expanded(

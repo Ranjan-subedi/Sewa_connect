@@ -198,6 +198,12 @@ class _LogInPageState extends State<LogInPage> {
                               email: emailController.text.trim(),
                               password: passwordController.text.trim()
                           );
+
+                          await SharedPreferencesHelper().setLoginState(state: true);
+                          await SharedPreferencesHelper().saveEmail(email: emailController.text.trim());
+
+                          print(SharedPreferencesHelper().getLoginState());
+
                           if(response == null){
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('Login Successful'))
