@@ -18,7 +18,7 @@ class FirebaseAuthServices {
           "name": name,
           "email": email,
           "password": password,
-          "created at": DateTime.timestamp(),
+          "created at": DateTime.now(),
         });
       }catch(e){
         print(e);
@@ -58,5 +58,9 @@ class FirebaseAuthServices {
       return "something got error $e";
     }
 
+  }
+
+  Future<void> logout()async{
+    await FirebaseAuth.instance.signOut();
   }
 }

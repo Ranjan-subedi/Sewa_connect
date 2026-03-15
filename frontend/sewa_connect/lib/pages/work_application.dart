@@ -66,28 +66,32 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
   }
 
   uploadWorkApplication(String applicantPhoto)async{
-    final query =await  FirebaseFirestore.instance.collection("Work Application").where("phone",isEqualTo: phoneNumber.text).get();
+    final query =await  FirebaseFirestore.instance
+        .collection("Work Application")
+        .where("phone",isEqualTo: phoneNumber.text)
+        .get();
 
     if(query.docs.isEmpty){
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      print("Subbmiting uid $uid");
       await FirebaseFirestore.instance.collection("Work Application").add({
-        "userId": FirebaseAuth.instance.currentUser!.uid,
+        "userId": uid,
         "name" : famousName.text.trim(),
         "phone" : phoneNumber.text.trim(),
         "job" : currentjobselected,
         "applicantPhoto" : applicantPhoto,
         "status" : "pending",
-        "verified": false,
+        "isProvider": false,
         "specialCertificate": "Certificate Photo",
         "citizenshipFront": "CitizenShip Front Photo",
         "citizenshipBack": "CitizenShip Back Photo",
         "applicationDate" : DateTime.now(),
 
       });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("applied")));
     }else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already applied")));
     }
-
-
   }
 
   List<String> selectjob  = ["plumber", "Electrician",];
@@ -110,7 +114,8 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
               var applicantPhoto = await CloudainaryServices().
                  uploadImage(folderName: "WorkApplication", imageFile: image!.path);
 
-              uploadWorkApplication(applicantPhoto);
+              await uploadWorkApplication(applicantPhoto);
+              Navigator.pop(context);
             }, icon: Icon(Icons.file_upload))
           ],
         title: Text("Work Application"),

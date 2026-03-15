@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/pages/work_application.dart';
+import 'package:sewa_connect/services/firebase_auth.dart';
 import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
 import '../provider/dashboard.dart';
@@ -46,6 +47,42 @@ class _ProfilePageState extends State<ProfilePage> {
 
   }
 
+  String? email;
+  String? uid;
+
+  getOnLoad()async{
+    email = await FirebaseAuth.instance.currentUser!.email;
+    uid = FirebaseAuth.instance.currentUser!.uid;
+    setState(() {
+      print(email);
+      print(uid);
+    });
+  }
+
+  Future<void> getUserRole()async{
+    final roleDoc = await FirebaseFirestore.instance.collection("Users").doc(uid).get();
+
+    if(roleDoc.exists){
+      final isProvider = roleDoc.data()!["isProvider"];
+
+      if(!isProvider){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are not provider")));
+        return ;
+      }else{
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(),));
+      }
+    }
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getOnLoad();
+
+  }
+
 
 
   @override
@@ -61,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   UserAccountsDrawerHeader(
                     accountName: Text('Ranjan Subedi'),
-                    accountEmail: Text('Ranjansubedi@gmail.com'),
+                    accountEmail: Text(email.toString()),
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.black,
                       child: Text('R'),
@@ -93,31 +130,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: Icon(Icons.switch_right_outlined),
                     title: Text("Switch my role"),
                     onTap: ()async {
-                      // Navigate to settings
-                      final uid = FirebaseAuth.instance.currentUser!.uid;
-
-                      final userDoc = await FirebaseFirestore.instance
-                          .collection("Users")
-                          .doc(uid)
-                          .get();
-
-                      String role = userDoc["role"];
-
-                      if(role == "provider"){
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => ProviderDashboardPage()));
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("You are not a verified provider")));
-                      }
+                      getUserRole();
                     },
                   ),
                   Divider(), // a line to separate logout
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text("Logout"),
-                    onTap: () {
-                      // Handle logout
+                    onTap: ()async {
+                      SharedPreferencesHelper().setLoginState(state: false);
+                      await FirebaseAuthServices().logout().then((value) {
+                        return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LogInPage(),));
+                      },);
                     },
                   ),
 

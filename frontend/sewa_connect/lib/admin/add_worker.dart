@@ -71,6 +71,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
                       final docId = workApplication[index].id;
                       return InkWell(
                         onTap: () {
+                          print(docId);
                           Navigator.push(context, MaterialPageRoute(builder: (context) =>
                               RequestProfilePage(
                                 phone: phone,

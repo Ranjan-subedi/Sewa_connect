@@ -31,22 +31,43 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
 
     DocumentSnapshot profile = await firestore.collection("Work Application").doc(docId).get();
 
+    // if(!profile.exists){
+    //   print("Document not exists");
+    //   return ;
+    // }
+
     Map<String, dynamic> workerData = profile.data() as Map<String, dynamic>;
     String job = workerData["job"];
+    String uid = workerData["userId"];
+    print(uid);
 
     await firestore.collection("Services").doc(job).collection("providers").doc(phone).set(
         {
           "name": workerData["name"],
           "phone": workerData["phone"],
-          "phone": workerData["phone"],
-          "photo": workerData["photo"] ?? "",
-          "verified": true,
+          "photo": workerData["applicantPhoto"] ?? "",
+          "isProvider": true,
           "verifiedAt": Timestamp.now(),
         }
     );
 
-    await firestore.collection("Work Application").doc(docId).update({"verified": "true", "status": "accepted"});
+    await firestore.collection("Work Application")
+        .doc(docId)
+        .update(
+        {
+          "isProvider": true,
+          "status": "accepted"
+        });
 
+    await firestore.collection("Users")
+        .doc(uid)
+        .update(
+        {
+          "job": job,
+          "isProvider": true,
+          "verifiedAt": Timestamp.now(),
+        }
+    );
 
 
   }
@@ -87,7 +108,7 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
                     width: 2
                   )
                 ),
-                child:widget.image == "" ? 
+                child:widget.image == "" ?
                 Lottie.asset('assets/lottie/LoadingElephant.json') :
                     Image.network(widget.image,fit: BoxFit.cover,)
                 ,
@@ -152,8 +173,22 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InkWell(
-                    onTap: () {
-                      acceptApplication(docId: widget.docId, phone: widget.phone);
+                    onTap: () async {
+                      try {
+
+                        await acceptApplication(
+                            docId: widget.docId,
+                            phone: widget.phone
+                        );
+
+                        Navigator.pop(context);
+
+                      } catch (e) {
+
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e.toString())));
+
+                      }
                     },
                     child: Container(
                       height: 50,
@@ -166,8 +201,8 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {
-                      rejectApplication(docId: widget.docId);
+                    onTap: () async{
+                      await rejectApplication(docId: widget.docId);
                       Navigator.pop(context);
                     },
                     child: Container(
