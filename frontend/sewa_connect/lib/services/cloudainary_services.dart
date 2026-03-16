@@ -33,10 +33,6 @@ class CloudainaryServices {
     }else{
       return null;
     }
-
-
-
-    
     
   }
 

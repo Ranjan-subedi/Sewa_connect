@@ -73,7 +73,11 @@ class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
                             return InkWell(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => OrderServicesPage(name: documentSnapshot['name'], photo: documentSnapshot["photo"]),));
+                                  builder: (context) => OrderServicesPage(
+                                      service: documentSnapshot["service"],
+                                      name: documentSnapshot['name'],
+                                      photo: documentSnapshot["photo"]),
+                                ));
                               },
                               child: Card(
                                 color: Theme.of(context).colorScheme.primary.withAlpha(150),

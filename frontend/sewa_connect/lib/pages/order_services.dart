@@ -7,10 +7,12 @@ import 'package:url_launcher/url_launcher.dart';
 class OrderServicesPage extends StatefulWidget {
   final String name;
   final String photo;
+  final String service;
 
   const OrderServicesPage({
     super.key,
     required this.name,
+    required this.service,
     required this.photo,
   });
 
@@ -223,6 +225,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
 
                         DatabaseServices().setOrder(data: {
                           "name": widget.name,
+                          "service" : widget.service,
                           "phone": "9864388822",
                           "address": "Pokhara",
                           "email": email,

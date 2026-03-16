@@ -45,6 +45,7 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
         {
           "name": workerData["name"],
           "phone": workerData["phone"],
+          "service": workerData["job"],
           "photo": workerData["applicantPhoto"] ?? "",
           "isProvider": true,
           "verifiedAt": Timestamp.now(),

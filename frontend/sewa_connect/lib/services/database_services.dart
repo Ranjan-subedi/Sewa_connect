@@ -57,7 +57,7 @@ class DatabaseServices {
   Stream<QuerySnapshot> addWorker(){
     return firebasefirestore
         .collection("Work Application")
-        // .where("status", isEqualTo: "pending")
+        .where("status", isEqualTo: "pending")
         .snapshots();
   }
 
