@@ -8,6 +8,7 @@ import 'package:sewa_connect/admin/all_order.dart';
 import 'package:sewa_connect/admin/service_add.dart';
 import 'package:sewa_connect/cloudainarycrud.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
+import 'package:sewa_connect/provider/dashboard.dart';
 import 'package:sewa_connect/services/firebase_options.dart';
 import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/nav_bar.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NavBar(),
+      home: ProviderDashboardPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,
