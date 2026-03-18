@@ -69,8 +69,6 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
           "verifiedAt": Timestamp.now(),
         }
     );
-
-
   }
 
   Future<void> rejectApplication({required String docId})async{
@@ -114,6 +112,7 @@ class _RequestProfilePageState extends State<RequestProfilePage> {
                     Image.network(widget.image,fit: BoxFit.cover,)
                 ,
               ),
+              
               SizedBox(height: 20,),
               Text(widget.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
               Text('I am good plumber with 5 years experience. I have got certificate of level 3 CTEVT ', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),),

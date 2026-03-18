@@ -89,9 +89,6 @@ class _ServiceAddPageState extends State<ServiceAddPage> {
                 ),
                 onPressed: () {
                   DatabaseServices().addService(service: selectedService!, category: {
-                    "name": "Plumber",
-                    "photo": "not Yet available !!"
-
                   });
             }, child: Text("Add Service")
             )

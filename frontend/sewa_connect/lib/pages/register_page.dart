@@ -17,6 +17,8 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
 
   bool isLoading = false;
+  bool obsecureTextConfirmPassword = true;
+  bool obsecureTextPassword = true;
   final Auth auth = Auth();
 
   late GlobalKey<FormState> formKey;
@@ -31,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   FocusNode passwordNode = FocusNode();
   FocusNode confirmPasswordNode = FocusNode();
   FocusNode submitNode = FocusNode();
+
 
 
 
@@ -205,6 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
+                    obscureText: obsecureTextPassword,
                     focusNode: passwordNode,
                     onFieldSubmitted: (value) {
                       FocusScope.of(context).requestFocus(confirmPasswordNode);
@@ -221,6 +225,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: passwordController,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
+                      suffixIcon: IconButton(onPressed:() {
+                        setState(() {
+                          obsecureTextPassword = !obsecureTextPassword;
+                        });
+                      }, icon: Icon(Icons.remove_red_eye)),
                       filled: true,
                       fillColor: Colors.white,
                       labelText: "Password",
@@ -241,6 +250,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
+                    obscureText: obsecureTextConfirmPassword,
                     focusNode: confirmPasswordNode,
                     onFieldSubmitted: (value) {
                       FocusScope.of(context).requestFocus(submitNode);
@@ -257,6 +267,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: confirmPasswordController,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
+                      suffixIcon: IconButton(onPressed: () {
+                        setState(() {
+                          obsecureTextConfirmPassword = !obsecureTextConfirmPassword;
+                        });
+                      }, icon: Icon(Icons.remove_red_eye)),
                       filled: true,
                       fillColor: Colors.white,
                       labelText: "Comform Password",
@@ -316,6 +331,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         // await registerUser();
 
                         await firebaseRegister();
+                        Navigator.pop(context);
                       }
                     },
                     child: Text("Register"),

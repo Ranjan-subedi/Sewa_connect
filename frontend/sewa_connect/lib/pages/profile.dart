@@ -24,9 +24,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String? profileImageUrl;
   File? image;
 
+
+
   uploadImage() async {
-
-
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
 
     if(pickedImage == null )return ;
