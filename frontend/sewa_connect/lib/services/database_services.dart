@@ -38,6 +38,8 @@ class DatabaseServices {
         .collection("Accepted Services")
         .doc(docId)
         .set(data);
+
+    await firebasefirestore.collection("Orders").doc(docId).update(data);
     // await firebasefirestore.collection("Orders").doc(docId).delete();
   }
 

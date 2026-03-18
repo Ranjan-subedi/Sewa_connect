@@ -19,6 +19,7 @@ import 'package:sewa_connect/pages/splash_page.dart';
 import 'package:sewa_connect/pages/work_application.dart';
 import 'package:sewa_connect/widget/theme.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

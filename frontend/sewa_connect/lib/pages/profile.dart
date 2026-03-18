@@ -21,34 +21,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String? profileImageUrl;
-  File? image;
-
-
-
-  uploadImage() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-
-    if(pickedImage == null )return ;
-
-    image = File(pickedImage.path);
-    
-    final imageUrl = await  uploadImageToCloudinary(
-        context: context,
-        cloudName: dotenv.env['CLOUD_NAME'] ?? "",
-        uploadPreset: dotenv.env['UPLOAD_PRESET'] ?? "",
-    );
-
-    if(imageUrl != null){
-      setState(() {
-        profileImageUrl = imageUrl;
-      });
-    }
-
-  }
-
+  File? profileImage;
   String? email;
   String? uid;
+
+
 
   getOnLoad()async{
     email = await FirebaseAuth.instance.currentUser!.email;
@@ -64,12 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if(roleDoc.exists){
       final isProvider = roleDoc.data()!["isProvider"];
+      final job = roleDoc.data()!["job"];
 
       if(!isProvider){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are not provider")));
         return ;
       }else{
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(job: job,),));
       }
     }
 
@@ -101,7 +79,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     accountEmail: Text(email.toString()),
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.black,
-                      child: Text('R'),
+                      child:profileImage != null ? Icon(Icons.person) :
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: Text('Sewa_connect',)),
+                      ),
                     ),
                   ),
                   // Drawer items
