@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/pages/work_application.dart';
 import 'package:sewa_connect/services/firebase_auth.dart';
@@ -12,6 +13,7 @@ import 'package:sewa_connect/utils/cloudinary_upload.dart';
 
 import '../provider/dashboard.dart';
 import '../services/sharedpreferences.dart';
+import 'nav_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -75,8 +77,25 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListView(
                 children: [
                   UserAccountsDrawerHeader(
-                    accountName: Text('Ranjan Subedi'),
+                    accountName: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text('Ranjan Subedi'),
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                              child:uid == null ?  Center(child: CircularProgressIndicator()) : Text(uid.toString(), overflow: TextOverflow.ellipsis, style: TextStyle(
+                                decoration: TextDecoration.underline
+                              ),)
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+
+                      ],
+                    ),
                     accountEmail: Text(email.toString()),
+
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.black,
                       child:profileImage != null ? Icon(Icons.person) :
@@ -92,15 +111,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     leading: Icon(Icons.home),
                     title: Text("Home"),
-                    onTap: () {// close drawer
-                      // Navigate to home page
+                    onTap: () {
                     },
                   ),
                   ListTile(
                     leading: Icon(Icons.settings),
                     title: Text("Settings"),
                     onTap: () {
-                      // Navigate to settings
                     },
                   ),
                   ListTile(

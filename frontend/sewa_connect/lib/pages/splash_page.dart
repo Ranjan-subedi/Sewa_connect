@@ -13,9 +13,12 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool? isLoggedIn;
+  String? email;
 
   Future splashScreen() async {
     isLoggedIn = await SharedPreferencesHelper().getLoginState();
+    email = await SharedPreferencesHelper().getEmail();
+    print("$email from splash page");
     await Future.delayed(const Duration(seconds: 3));
     print(isLoggedIn);
 
@@ -23,9 +26,10 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
 
-    (isLoggedIn != null && isLoggedIn == true) ? Navigator.pushReplacement(
+    (isLoggedIn != null && isLoggedIn == true && email != null && email!.isNotEmpty) ?  Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => NavBar()),
+
     ) : Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) => LogInPage()),
