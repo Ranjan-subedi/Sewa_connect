@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/video/analytics/video_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sewa_connect/services/database_services.dart';
 import 'package:sewa_connect/services/geo_locator.dart';
+
+import '../widget/notification_services.dart' show NotificationServices;
 
 class AllOrderPage extends StatefulWidget {
   const AllOrderPage({super.key});
@@ -105,6 +109,13 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                             final orderId = order[index].id;
 
                                             DatabaseServices().updateStatus(orderId);
+
+                                            await NotificationServices()
+                                                .saveNotification(
+                                                title: "Service Accepted",
+                                                body: "Your service has been updated you will receive a call soon !",
+                                                userId:FirebaseAuth.instance.currentUser!.uid
+                                            );
                                       }, child: Text("Accept")),
 
 
@@ -119,12 +130,23 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                             DocumentSnapshot snapshot = await
                                             FirebaseFirestore
                                                 .instance
-                                            .collection("Orders").doc(orderId).get();
+                                                .collection("Orders")
+                                                .doc(orderId)
+                                                .get();
 
-                                            final orderData = snapshot.data();
-                                            final status = orderData!["status"];
+                                            Map<String, dynamic> orderData = snapshot.data() as Map<String, dynamic>;
+                                            orderData["status"] = "rejected";
 
-                                            await FirebaseFirestore.instance.collection("Orders").doc(orderId).set(status);
+                                            // final status = orderData!["status"];
+
+                                            await FirebaseFirestore
+                                                .instance.collection("Orders")
+                                                .doc(orderId).update(orderData);
+
+                                            await NotificationServices().saveNotification(
+                                                title: "Service Rejected",
+                                                body: "your service is not available for now ",
+                                                userId: FirebaseAuth.instance.currentUser!.uid);
 
 
                                             // DatabaseServices().deleteOrder(orderId: order[index].id);

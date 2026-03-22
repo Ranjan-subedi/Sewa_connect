@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/model/add_service_model.dart';
 import 'package:sewa_connect/pages/services_category.dart';
 import 'package:sewa_connect/services/database_services.dart';
+import 'package:sewa_connect/widget/notification_services.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -38,6 +40,9 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    NotificationServices().initialize(
+        userId:FirebaseAuth.instance.currentUser!.uid
+    );
   }
 
   @override
