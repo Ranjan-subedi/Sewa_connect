@@ -21,34 +21,31 @@ class OrderServicesPage extends StatefulWidget {
 }
 
 class _OrderServicesState extends State<OrderServicesPage> {
-
   String? email;
 
-  getSharedPrefs()async{
+  getSharedPrefs() async {
     email = await SharedPreferencesHelper().getEmail();
     setState(() {
       print(email);
     });
   }
 
-  Future<void> makePhoneCall(String phoneNumber)async{
-    final Uri url = Uri(scheme: "tel" , path: phoneNumber);
+  Future<void> makePhoneCall(String phoneNumber) async {
+    final Uri url = Uri(scheme: "tel", path: phoneNumber);
 
-    try{
-      if(await canLaunchUrl(url)){
+    try {
+      if (await canLaunchUrl(url)) {
         await launchUrl(url);
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Cannot make phone call")),
-        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Cannot make phone call")));
       }
-    }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error on launching phone call")),
-      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error on launching phone call")));
     }
-
-
   }
 
   @override
@@ -73,7 +70,6 @@ class _OrderServicesState extends State<OrderServicesPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-
               Container(
                 height: 140,
                 width: 140,
@@ -88,13 +84,12 @@ class _OrderServicesState extends State<OrderServicesPage> {
                   child: Image.network(
                     widget.photo,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                    Icon(Icons.person, size: 70),
+                    errorBuilder: (_, __, ___) => Icon(Icons.person, size: 70),
                   ),
                 ),
               ),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
 
               Card(
                 shape: RoundedRectangleBorder(
@@ -203,7 +198,6 @@ class _OrderServicesState extends State<OrderServicesPage> {
 
               Row(
                 children: [
-
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
@@ -213,36 +207,43 @@ class _OrderServicesState extends State<OrderServicesPage> {
                       label: const Text("Call"),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(12))
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(12),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () async{
-                        final position = await GeoLocatorServices().getCurrentLocation();
+                      onPressed: () async {
+                        final position = await GeoLocatorServices()
+                            .getCurrentLocation();
 
-                        DatabaseServices().setOrder(data: {
-                          "name": widget.name,
-                          "service" : widget.service,
-                          "phone": "9864388822",
-                          "address": "Pokhara",
-                          "email": email,
-                          "photo": widget.photo,
-                          "Location" : {
-                            "latitude": position!.latitude,
-                            "longitude": position.longitude,
+                        DatabaseServices().setOrder(
+                          data: {
+                            "name": widget.name,
+                            "service": widget.service,
+                            "phone": "9864388822",
+                            "address": "Pokhara",
+                            "email": email,
+                            "photo": widget.photo,
+                            "Location": {
+                              "latitude": position!.latitude,
+                              "longitude": position!.longitude,
+                            },
+                            "status": "pending",
+                            "timestamp": DateTime.now(),
                           },
-                          "status": "pending",
-                          "timestamp": DateTime.now(),
-                        });
+                        );
                       },
                       icon: const Icon(Icons.calendar_today),
                       label: const Text("Book Service"),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(12))
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -279,10 +280,7 @@ class _InfoTile extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               Text(
                 value,

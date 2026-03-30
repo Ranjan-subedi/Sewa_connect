@@ -6,7 +6,9 @@ import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/model/add_service_model.dart';
 import 'package:sewa_connect/pages/services_category.dart';
 import 'package:sewa_connect/services/database_services.dart';
+import 'package:sewa_connect/services/sharedpreferences.dart';
 import 'package:sewa_connect/widget/notification_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -16,9 +18,31 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  String? name;
+  Image? profileImage;
+
+  getOnTheLoad() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final savedName = await SharedPreferencesHelper().getName();
+    if (savedName == "" || savedName == null) {
+      final userData = await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(uid)
+          .get();
+      name = userData.data()!["name"];
+      await SharedPreferencesHelper().saveName(name: name!);
+    } else {
+      print("Name Found in Shared Preferences");
+      name = savedName;
+    }
+
+    print(name);
+
+    setState(() {});
+  }
 
   TextEditingController searchcontroller = TextEditingController();
-
 
   List<Widget> caurasolItems = [
     Lottie.asset('assets/lottie/LoadingElephant.json'),
@@ -41,8 +65,9 @@ class _HomepageState extends State<Homepage> {
     // TODO: implement initState
     super.initState();
     NotificationServices().initialize(
-        userId:FirebaseAuth.instance.currentUser!.uid
+      userId: FirebaseAuth.instance.currentUser!.uid,
     );
+    getOnTheLoad();
   }
 
   @override
@@ -73,16 +98,32 @@ class _HomepageState extends State<Homepage> {
               children: [
                 Column(
                   children: [
-                    Text("Welcome",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
-                    SizedBox(height: 10),
-                    Text('Ranjan',style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                    Text(
+                      "Welcome",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.2,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: Text(
+                          name.toString(),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 Spacer(),
                 Row(
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.5,
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(),
@@ -96,19 +137,25 @@ class _HomepageState extends State<Homepage> {
                         decoration: InputDecoration(
                           hintText: "Search",
                           border: InputBorder.none,
-                          suffixIcon: Icon(Icons.search)
+                          suffixIcon: Icon(Icons.search),
                         ),
-
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 6),
                 ClipRRect(
-                  // borderRadius: BorderRadius.circular(50),
-                  child: Icon(
-                    Icons.person,
-                    color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(50),
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.black,
+                    child:profileImage != null ? Icon(Icons.person) :
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: Text('Sewa_connect',)),
+                    ),
                   ),
                 ),
               ],
@@ -123,12 +170,14 @@ class _HomepageState extends State<Homepage> {
           SizedBox(height: 20),
 
           SizedBox(
-            child : Column(
+            child: Column(
               children: [
                 Text("Trending Services"),
                 CarouselSlider(
                   items: caurasolItems
-                      .map((e) => Container(margin: EdgeInsets.all(8), child: e))
+                      .map(
+                        (e) => Container(margin: EdgeInsets.all(8), child: e),
+                      )
                       .toList(),
 
                   options: CarouselOptions(

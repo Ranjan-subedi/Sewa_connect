@@ -50,120 +50,140 @@ class _MyOrderPageState extends State<AllOrderPage> {
             SizedBox(height: 20),
 
             Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async{
-                    await getOnTheLoad();
-                  },
-                  child: StreamBuilder(
-                    stream: fetchMyAllOrder,
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text("No Orders Found"));
-                      }
-                      if (!snapshot.hasData) {
-                        return Center(child: Text("No Data Found"));
-                      }
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await getOnTheLoad();
+                },
+                child: StreamBuilder(
+                  stream: fetchMyAllOrder,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(child: Text("No Orders Found"));
+                    }
+                    if (!snapshot.hasData) {
+                      return Center(child: Text("No Data Found"));
+                    }
 
-                      final order = snapshot.data!.docs;
+                    final order = snapshot.data!.docs;
 
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        // physics: NeverScrollableScrollPhysics(),
-                        itemCount: order.length,
-                        itemBuilder: (context, index) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      // physics: NeverScrollableScrollPhysics(),
+                      itemCount: order.length,
+                      itemBuilder: (context, index) {
+                        final name = order[index].data()["name"] ?? "";
+                        final email = order[index].data()["email"] ?? "";
+                        final address = order[index].data()["address"] ?? "";
+                        final userId = order[index].data()["userId"] ?? "";
 
-                          final name = order[index].data()["name"] ?? "";
-                          final email = order[index].data()["email"] ?? "";
-                          final address = order[index].data()["address"] ?? "";
-
-                          return Container(
-                            margin: EdgeInsets.all(8),
-                            child: Material(
-                              color: Theme.of(context).colorScheme.primary.withAlpha(130),
-                              borderRadius: BorderRadius.circular(12),
-                              elevation: 10,
-                              child: Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.all(8),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(name),
-                                    Divider(),
-                                    SizedBox(height: 20,),
-                                    Text(email),
-                                    Text(address),
-                                  SizedBox(height: 30,),
+                        return Container(
+                          margin: EdgeInsets.all(8),
+                          child: Material(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withAlpha(130),
+                            borderRadius: BorderRadius.circular(12),
+                            elevation: 10,
+                            child: Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.all(8),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(name),
+                                  Divider(),
+                                  SizedBox(height: 20),
+                                  Text(email),
+                                  Text(address),
+                                  SizedBox(height: 30),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: Theme.of(context).colorScheme.secondary.withAlpha(150),
-                                            foregroundColor: Theme.of(context).colorScheme.primary
-                                          ),
-                                          onPressed: () async{
-                                            final orderId = order[index].id;
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                              .withAlpha(150),
+                                          foregroundColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        onPressed: () async {
+                                          final orderId = order[index].id;
+                                          DatabaseServices().updateStatus(
+                                            orderId,
+                                          );
 
-                                            DatabaseServices().updateStatus(orderId);
-
-                                            await NotificationServices()
-                                                .saveNotification(
+                                          await NotificationServices()
+                                              .saveNotification(
                                                 title: "Service Accepted",
-                                                body: "Your service has been updated you will receive a call soon !",
-                                                userId:FirebaseAuth.instance.currentUser!.uid
-                                            );
-                                      }, child: Text("Accept")),
-
+                                                body:
+                                                    "Your service has been updated you will receive a call soon !",
+                                                userId: userId,
+                                              );
+                                        },
+                                        child: Text("Accept"),
+                                      ),
 
                                       OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                              backgroundColor: Colors.red[300],
-                                              foregroundColor: Theme.of(context).colorScheme.primary
-                                          ),
-                                          onPressed: ()async{
-                                            final orderId = order[index].id;
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.red[300],
+                                          foregroundColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        onPressed: () async {
+                                          final orderId = order[index].id;
 
-                                            DocumentSnapshot snapshot = await
-                                            FirebaseFirestore
-                                                .instance
-                                                .collection("Orders")
-                                                .doc(orderId)
-                                                .get();
+                                          DocumentSnapshot snapshot =
+                                              await FirebaseFirestore.instance
+                                                  .collection("Orders")
+                                                  .doc(orderId)
+                                                  .get();
 
-                                            Map<String, dynamic> orderData = snapshot.data() as Map<String, dynamic>;
-                                            orderData["status"] = "rejected";
+                                          Map<String, dynamic> orderData =
+                                              snapshot.data()
+                                                  as Map<String, dynamic>;
+                                          orderData["status"] = "rejected";
+                                          final userId = orderData["userId"];
 
-                                            // final status = orderData!["status"];
+                                          // final status = orderData!["status"];
 
-                                            await FirebaseFirestore
-                                                .instance.collection("Orders")
-                                                .doc(orderId).update(orderData);
+                                          await FirebaseFirestore.instance
+                                              .collection("Orders")
+                                              .doc(orderId)
+                                              .update(orderData);
 
-                                            await NotificationServices().saveNotification(
+                                          await NotificationServices()
+                                              .saveNotification(
                                                 title: "Service Rejected",
-                                                body: "your service is not available for now ",
-                                                userId: FirebaseAuth.instance.currentUser!.uid);
+                                                body:
+                                                    "your service is not available for now ",
+                                                userId: userId,
+                                              );
 
-
-                                            // DatabaseServices().deleteOrder(orderId: order[index].id);
-                                      }, child: Text("Reject")),
+                                          // DatabaseServices().deleteOrder(orderId: order[index].id);
+                                        },
+                                        child: Text("Reject"),
+                                      ),
                                     ],
-                                  )
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
+            ),
           ],
         ),
       ),

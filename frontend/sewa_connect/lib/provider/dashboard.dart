@@ -2,29 +2,37 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/provider/service_details.dart';
 
 class ProviderDashboardPage extends StatefulWidget {
   final String job;
+  final String providerName;
 
-  const ProviderDashboardPage({super.key, required this.job});
+  const ProviderDashboardPage({
+    super.key,
+    required this.job,
+    required this.providerName,
+  });
 
   @override
   State<ProviderDashboardPage> createState() => _ProviderState();
 }
 
 class _ProviderState extends State<ProviderDashboardPage> {
-
-   Stream<QuerySnapshot<Map<String, dynamic>>> fetchServices(){
-    return FirebaseFirestore.instance.collection("Accepted Services").where("service", isEqualTo: widget.job).snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchServices() {
+    return FirebaseFirestore.instance
+        .collection("Accepted Services")
+        .where("service", isEqualTo: widget.job)
+        // .where("isTaken", isEqualTo: false)
+        .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? fetchdata;
 
-   Future<void> getOnTheLoad()async{
-     fetchdata = fetchServices();
-     setState(() {
-     });
-   }
+  Future<void> getOnTheLoad() async {
+    fetchdata = fetchServices();
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -42,62 +50,91 @@ class _ProviderState extends State<ProviderDashboardPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: RefreshIndicator(
-        onRefresh: () async =>getOnTheLoad(),
-        child: StreamBuilder(stream: fetchdata,
-            builder: (context,AsyncSnapshot snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting){
-                return Center(child: CircularProgressIndicator(),);
-              }
-              if(!snapshot.hasData || snapshot.data!.docs.isEmpty){
-                return Center(child: Text("No Services Available !"),);
-              }
-              final availableServices= snapshot.data!.docs;
+        onRefresh: () async => getOnTheLoad(),
+        child: StreamBuilder(
+          stream: fetchdata,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(child: Text("No Services Available !"));
+            }
+            final availableServices = snapshot.data!.docs;
 
-              return ListView.builder(
-                  itemCount: availableServices.length,
-                  itemBuilder: (context, index) {
-                    final name = availableServices[index].data()["name"];
-                    final phone = availableServices[index].data()["phone"];
-                    // final service = availableServices[index].data()["service"];
-                    final photo = availableServices[index].data()["photo"];
+            return ListView.builder(
+              itemCount: availableServices.length,
+              itemBuilder: (context, index) {
+                final docId = availableServices[index].id;
+                final name = availableServices[index].data()["name"];
+                final phone = availableServices[index].data()["phone"];
+                final service = availableServices[index].data()["service"];
+                final photo = availableServices[index].data()["photo"];
+                final location = availableServices[index].data()["Location"];
+                final double latitude = location["latitude"];
+                final double longitude = location["longitude"];
+                final dateTime = availableServices[index].data()["timestamp"];
 
-
-                    return Container(
-                      margin: EdgeInsets.all(12),
-                      height: 100,
-                      child: Material(
-                        elevation: 3,
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          child: ListTile(
-                            title: Text(
-                              name,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                            leading: ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(26),
-                              child: CircleAvatar(
-                                radius: 26,
-                                child: CachedNetworkImage(
-                                  imageUrl: photo, fit: BoxFit.cover, width: 52,
-                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
-                                  errorWidget: (context, url, error) => const Center(child: Icon(Icons.error),),
-                                ),
-                              ),
-                            ),
-
-                            subtitle: Text(phone),
-                            // visualDensity: VisualDensity(vertical: 4),
-
-                          ),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServiceDetailsPage(
+                          providerName: widget.providerName,
+                          docId: docId,
+                          dateTime: dateTime,
+                          photo: photo,
                         ),
                       ),
                     );
-                  },);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(12),
+                    height: 100,
+                    child: Material(
+                      elevation: 3,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        child: ListTile(
+                          title: Text(
+                            name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(26),
+                            child: CircleAvatar(
+                              radius: 26,
+                              child: Hero(
+                                tag: dateTime,
+                                child: CachedNetworkImage(
+                                  imageUrl: photo,
+                                  fit: BoxFit.cover,
+                                  width: 52,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Center(child: Icon(Icons.error)),
+                                ),
+                              ),
+                            ),
+                          ),
 
-            },
+                          subtitle: Text(phone),
+                          trailing: Text(dateTime.toDate().toString()),
+
+                          // visualDensity: VisualDensity(vertical: 4),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );

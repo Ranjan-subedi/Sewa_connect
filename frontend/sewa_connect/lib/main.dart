@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AdminPage(),
+      home: SplashPage(),
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,

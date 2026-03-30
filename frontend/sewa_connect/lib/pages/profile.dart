@@ -44,12 +44,14 @@ class _ProfilePageState extends State<ProfilePage> {
     if(roleDoc.exists){
       final isProvider = roleDoc.data()!["isProvider"];
       final job = roleDoc.data()!["job"];
+      final name = roleDoc.data()!["name"];
+
 
       if(!isProvider){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are not provider")));
         return ;
       }else{
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(job: job,),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(job: job,providerName: name,),));
       }
     }
   }
