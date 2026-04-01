@@ -110,7 +110,7 @@ class _NavBarState extends State<NavBar> {
       body: pages[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        buttonBackgroundColor: Theme.of(context).colorScheme.secondary,
+        buttonBackgroundColor: Colors.deepOrange,
         color: Theme.of(context).colorScheme.primary,
         animationDuration: Duration(milliseconds: 280),
         animationCurve: Curves.ease,
@@ -120,9 +120,9 @@ class _NavBarState extends State<NavBar> {
           });
         },
           items: [
-            Icon(Icons.home),
-            Icon(Icons.miscellaneous_services_rounded),
-            Icon(Icons.person),
+            Icon(Icons.home,color: Colors.white,size: 26,),
+            Icon(Icons.miscellaneous_services_rounded, color: Colors.white,size: 26,),
+            Icon(Icons.person, color: Colors.white,size: 26,),
           ],
           ),
     );

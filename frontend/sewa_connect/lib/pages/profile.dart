@@ -26,10 +26,12 @@ class _ProfilePageState extends State<ProfilePage> {
   File? profileImage;
   String? email;
   String? uid;
+  String? name;
 
 
 
   getOnLoad()async{
+    name = await SharedPreferencesHelper().getName();
     email = await FirebaseAuth.instance.currentUser!.email;
     uid = FirebaseAuth.instance.currentUser!.uid;
     setState(() {
@@ -44,14 +46,38 @@ class _ProfilePageState extends State<ProfilePage> {
     if(roleDoc.exists){
       final isProvider = roleDoc.data()!["isProvider"];
       final job = roleDoc.data()!["job"];
-      final name = roleDoc.data()!["name"];
+      final userName = roleDoc.data()!["name"];
+
+
+      await ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content:
+          Text("Checking your role "),
+            duration: Duration(seconds: 1),
+          ));
+
 
 
       if(!isProvider){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are not provider")));
+        showDialog(context: context,
+          builder: (context) {
+            return
+                AlertDialog(
+                  title: Text("Access denied"),
+                  content:Align(
+                    heightFactor: 1,
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Text("back", style: TextStyle(color: Colors.blue),)),) ,
+            );
+          },);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are not a provider")));
         return ;
       }else{
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(job: job,providerName: name,),));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You are a $job")));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDashboardPage(
+          job: job,
+          providerName: userName,),));
       }
     }
   }
@@ -81,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     accountName: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text('Ranjan Subedi'),
+                        Text(name.toString()),
                         SizedBox(width: 20,),
                         Expanded(
                           child: FittedBox(
@@ -92,7 +118,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         SizedBox(width: 20,),
-
                       ],
                     ),
                     accountEmail: Text(email.toString()),
@@ -132,7 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: Icon(Icons.switch_right_outlined),
                     title: Text("Switch my role"),
                     onTap: ()async {
-                      getUserRole();
+                      await getUserRole();
                     },
                   ),
                   Divider(), // a line to separate logout
@@ -141,6 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: Text("Logout"),
                     onTap: ()async {
                       SharedPreferencesHelper().setLoginState(state: false);
+                      SharedPreferencesHelper().saveName(name: "");
+                      
                       await FirebaseAuthServices().logout().then((value) {
                         return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LogInPage(),));
                       },);

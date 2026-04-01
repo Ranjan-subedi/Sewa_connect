@@ -94,7 +94,7 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
     }
   }
 
-  List<String> selectjob  = ["plumber", "Electrician",];
+  List<String> selectjob  = ["plumber", "Electrician","Carpenter","Painter"];
   String? currentjobselected;
 
   @override

@@ -100,7 +100,8 @@ class _RegisterPageState extends State<RegisterPage> {
       (
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        password: passwordController.text.trim());
+        password: passwordController.text.trim(),
+    );
   }
 
   @override

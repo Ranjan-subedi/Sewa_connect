@@ -58,7 +58,7 @@ class _ProviderState extends State<ProviderDashboardPage> {
               return Center(child: CircularProgressIndicator());
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Center(child: Text("No Services Available !"));
+              return Center(child: Text("No Services to show !"));
             }
             final availableServices = snapshot.data!.docs;
 

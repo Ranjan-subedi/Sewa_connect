@@ -14,6 +14,7 @@ class FirebaseAuthServices {
         await FirebaseFirestore.instance.collection("Users")
             .doc(credential.user!.uid)
             .set({
+          "isProvider": false,
           "role": "user",
           "name": name,
           "email": email,

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class _HomepageState extends State<Homepage> {
   String? name;
   Image? profileImage;
 
+  late ColorScheme theme = Theme.of(context).colorScheme;
+
   getOnTheLoad() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -42,7 +45,7 @@ class _HomepageState extends State<Homepage> {
     setState(() {});
   }
 
-  TextEditingController searchcontroller = TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   List<Widget> caurasolItems = [
     Lottie.asset('assets/lottie/LoadingElephant.json'),
@@ -72,102 +75,76 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return
-    // Scaffold(
-    // appBar: AppBar(
-    //   title: Text("Sewa Connect"),
-    //   centerTitle: true,
-    //   // foregroundColor: Theme.of(context).colorScheme.surface,
-    //   backgroundColor: Theme.of(context).colorScheme.primary,
-    // ),
-    //
-    // body:
-    Container(
-      margin: EdgeInsets.all(8),
+    return Container(
+      // margin: EdgeInsets.all(8),
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              // color: Theme.of(context).colorScheme.surface,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    Text(
-                      "Welcome",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.2,
-                      child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: Text(
-                          name.toString(),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12),
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withOpacity(0.4),
-                      ),
-                      child: TextField(
-                        controller: searchcontroller,
-                        decoration: InputDecoration(
-                          hintText: "Search",
-                          border: InputBorder.none,
-                          suffixIcon: Icon(Icons.search),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: theme.secondary,
+                      width: 2
+                    )
+                  ),
                   child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Colors.black,
-                    child:profileImage != null ? Icon(Icons.person) :
-                    Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: Text('Sewa_connect',)),
+                      radius: 26,
+                      child: Icon(Icons.person_outline, size: 28,),
                     ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        minFontSize: 14,
+                          "Hi, $name",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                        color: theme.secondary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                      ,)),
+                      Text("How can we help you today?"),
+                    ],
                   ),
                 ),
+                SizedBox(width: 10),
+                CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  child: Badge(
+                    // label: Text(2.toString(),),
+                    child: IconButton(onPressed: () {
+                  
+                    }, icon: Icon(Icons.notifications)),
+                  ),
+                )
               ],
             ),
           ),
+          Container(
+            padding: EdgeInsets.all(12),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[300],
+                hintText: "Search",
+                suffixIcon: Icon(Icons.search, size: 32,color: Colors.grey,),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none
+                )
+              ),
+            ),
+          ),
           SizedBox(height: 30),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [Text("Services"), Text("All")],
-          // ),
-          SizedBox(height: 20),
 
           SizedBox(
             child: Column(
