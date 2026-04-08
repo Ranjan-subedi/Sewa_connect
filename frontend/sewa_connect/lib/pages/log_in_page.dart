@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/admin/admin_login.dart';
 import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/register_page.dart';
 import 'package:sewa_connect/services/auth.dart';
@@ -103,7 +104,7 @@ class _LogInPageState extends State<LogInPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -136,7 +137,7 @@ class _LogInPageState extends State<LogInPage> {
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -258,7 +259,13 @@ class _LogInPageState extends State<LogInPage> {
             ),
           ),
         ),
+
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Text("admin"),
+        onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLogInPage(),));
+      },),
     );
   }
 }

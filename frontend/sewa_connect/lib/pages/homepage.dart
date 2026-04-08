@@ -76,7 +76,6 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: EdgeInsets.all(8),
       child: Column(
         children: [
           Container(
@@ -122,7 +121,7 @@ class _HomepageState extends State<Homepage> {
                   child: Badge(
                     // label: Text(2.toString(),),
                     child: IconButton(onPressed: () {
-                  
+
                     }, icon: Icon(Icons.notifications)),
                   ),
                 )
