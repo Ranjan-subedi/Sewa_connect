@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sewa_connect/provider/active_task.dart';
 import 'package:sewa_connect/provider/service_details.dart';
+import 'package:sewa_connect/services/geo_locator.dart';
 
 class ProviderDashboardPage extends StatefulWidget {
   final String job;
@@ -21,6 +23,9 @@ class ProviderDashboardPage extends StatefulWidget {
 }
 
 class _ProviderState extends State<ProviderDashboardPage> {
+
+  double? myLat;
+  double? myLng;
 
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchServices()  async*{
@@ -47,11 +52,22 @@ class _ProviderState extends State<ProviderDashboardPage> {
 
   }
 
+  Future<void> getMyLocation() async {
+    final position = await GeoLocatorServices().getCurrentLocation();
+
+    if (position != null) {
+      setState(() {
+        myLat = position.latitude;
+        myLng = position.longitude;
+      });
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getMyLocation();
   }
 
   @override
@@ -71,7 +87,35 @@ class _ProviderState extends State<ProviderDashboardPage> {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text("No Services to show !"));
           }
-          final availableServices = snapshot.data!.docs;
+          if (myLat == null || myLng == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final availableServices = snapshot.data!.docs.toList();
+
+          availableServices.sort((a, b) {
+            final dataA = a.data();
+            final dataB = b.data();
+
+            final locA = dataA["Location"];
+            final locB = dataB["Location"];
+
+            double distA = Geolocator.distanceBetween(
+              myLat!,
+              myLng!,
+              locA["latitude"],
+              locA["longitude"],
+            );
+
+            double distB = Geolocator.distanceBetween(
+              myLat!,
+              myLng!,
+              locB["latitude"],
+              locB["longitude"],
+            );
+
+            return distA.compareTo(distB);
+          });
 
           return ListView.builder(
             itemCount: availableServices.length,
@@ -85,6 +129,15 @@ class _ProviderState extends State<ProviderDashboardPage> {
               final double latitude = location["latitude"];
               final double longitude = location["longitude"];
               final dateTime = availableServices[index].data()["timestamp"];
+
+              double distance = Geolocator.distanceBetween(
+                myLat!,
+                myLng!,
+                latitude,
+                longitude,
+              );
+
+              double distanceInKm = distance/1000;
 
               return GestureDetector(
                 onTap: () async{
@@ -125,6 +178,7 @@ class _ProviderState extends State<ProviderDashboardPage> {
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
                       padding: EdgeInsets.all(12),
+
                       child: ListTile(
                         title: Text(
                           name,
@@ -152,7 +206,14 @@ class _ProviderState extends State<ProviderDashboardPage> {
                         ),
 
                         subtitle: Text(phone.toString()),
-                        trailing: Text(dateTime.toDate().toString()),
+
+
+                        trailing: Column(
+                          children: [
+                            Text(dateTime.toDate().toString()),
+                            Text("${distanceInKm.toStringAsFixed(2)} away"),
+                          ],
+                        ),
 
                         // visualDensity: VisualDensity(vertical: 4),
                       ),

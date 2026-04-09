@@ -51,12 +51,12 @@ class _AdminPageState extends State<AdminPage> {
                     child: Row(
                       children: [
                         Spacer(),
+                        Text("All Order"),
+                        Spacer(),
                         IconButton(onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrderPage(),));
                         },icon: Icon(Icons.reorder_sharp)),
                         Spacer(),
-                        Text("All Order"),
-                        Spacer()
                       ],
                     ),
                   ),

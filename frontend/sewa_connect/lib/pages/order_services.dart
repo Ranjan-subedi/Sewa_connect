@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/pages/map.dart';
+import 'package:sewa_connect/pages/pick_map.dart';
 import 'package:sewa_connect/services/database_services.dart';
 import 'package:sewa_connect/services/geo_locator.dart';
 import 'package:sewa_connect/services/sharedpreferences.dart';
@@ -220,10 +222,22 @@ class _OrderServicesState extends State<OrderServicesPage> {
                       onPressed: () async {
                         final position = await GeoLocatorServices()
                             .getCurrentLocation();
+                        final double lat = position!.latitude;
+                        final double lon = position.longitude!;
 
-                        DatabaseServices().setOrder(
+                        final selectedLocation = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return PickMapPage(lat: lat, long: lon);
+                        },));
+
+                        if (selectedLocation == null) {
+                          return ;
+                        }
+
+                        final userId = await FirebaseAuth.instance.currentUser!.uid;
+
+                        await DatabaseServices().setOrder(
                           data: {
-                            "userId": FirebaseAuth.instance.currentUser!.uid,
+                            "userId": userId,
                             "name": widget.name,
                             "service": widget.service,
                             "phone": "9864388822",
@@ -231,8 +245,8 @@ class _OrderServicesState extends State<OrderServicesPage> {
                             "email": email,
                             "photo": widget.photo,
                             "Location": {
-                              "latitude": position!.latitude,
-                              "longitude": position!.longitude,
+                              "latitude": selectedLocation!.latitude,
+                              "longitude": selectedLocation!.longitude,
                             },
                             "status": "pending",
                             "timestamp": DateTime.now(),

@@ -17,7 +17,7 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   late List<Widget> pages;
-  late Homepage homepage;
+  late HomePage homepage;
   late ProfilePage profilePage;
   late MyOrderPage myOrderPage;
 
@@ -27,12 +27,12 @@ class _NavBarState extends State<NavBar> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    homepage = Homepage();
+    homepage = HomePage();
     profilePage = ProfilePage();
     myOrderPage = MyOrderPage();
 
     pages = [
-      Homepage(),
+      HomePage(),
       MyOrderPage(),
       ProfilePage(),
     ];
