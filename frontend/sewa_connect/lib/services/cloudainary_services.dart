@@ -11,15 +11,18 @@ class CloudainaryServices {
     "https://api.cloudinary.com/v1_1/$cloudName/image/upload",
   );
 
-  Future uploadImage(
-      {required String folderName,
-        required String imageFile})async
-  {
+  Future<String?> uploadImage({
+    required String folderName,
+    required String imageFile,
+  }) async {
+    if (cloudName == null || cloudName!.isEmpty) return null;
+    if (uploadPreset == null || uploadPreset!.isEmpty) return null;
+
     final request = http.MultipartRequest("POST", url);
-    
+
     request.fields["upload_preset"] = uploadPreset!;
     request.fields["folder"] = folderName;
-    
+
     request.files.add(
       await http.MultipartFile.fromPath("file", imageFile),
     );
@@ -27,15 +30,11 @@ class CloudainaryServices {
     final response = await request.send();
     final responseBody = await response.stream.bytesToString();
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final responseData = jsonDecode(responseBody);
-      return responseData["secure_url"];
-    }else{
+      return responseData["secure_url"] as String?;
+    } else {
       return null;
     }
-    
   }
-
-
-
 }
