@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/homepage.dart';
 import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/pages/my_order.dart';
@@ -20,6 +21,7 @@ class _NavBarState extends State<NavBar> {
   late HomePage homepage;
   late ProfilePage profilePage;
   late MyOrderPage myOrderPage;
+  XFile? profileImage;
 
   int _selectedIndex = 0;
 
@@ -65,8 +67,14 @@ class _NavBarState extends State<NavBar> {
                 accountName: Text('Ranjan Subedi'),
                 accountEmail: Text('Ranjansubedi@gmail.com'),
               currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Text('R'),
+                backgroundColor: Colors.black,
+                child:profileImage != null ? Icon(Icons.person) :
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: Text('Sewa_connect',)),
+                ),
               ),
             ),
             // Drawer items

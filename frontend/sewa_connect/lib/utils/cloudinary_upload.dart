@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-/// Uploads an image from gallery to Cloudinary (unsigned upload).
-///
-/// Set [cloudName] and [uploadPreset]. Create an unsigned preset in
-/// Cloudinary: Settings → Upload → Upload presets → Add → Signing Mode: Unsigned.
-///
-/// Returns the secure URL of the uploaded image, or null on failure.
 Future<String?> uploadImageToCloudinary({
   required BuildContext context,
   required String cloudName,

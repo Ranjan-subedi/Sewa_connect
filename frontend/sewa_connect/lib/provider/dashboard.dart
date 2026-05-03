@@ -27,14 +27,14 @@ class _ProviderState extends State<ProviderDashboardPage> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchServices() async* {
     final activeTask = await FirebaseFirestore.instance
-        .collection("Accepted Services")
+        .collection("Orders")
         .where("acceptedBy", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where("taskStatus", isEqualTo: "running")
         .get();
 
     if (activeTask.docs.isNotEmpty) {
       yield* FirebaseFirestore.instance
-          .collection("Accepted Services")
+          .collection("Orders")
           .where(
             "acceptedBy",
             isEqualTo: FirebaseAuth.instance.currentUser!.uid,
@@ -43,9 +43,9 @@ class _ProviderState extends State<ProviderDashboardPage> {
           .snapshots();
     } else {
       yield* FirebaseFirestore.instance
-          .collection("Accepted Services")
+          .collection("Orders")
           .where("service", isEqualTo: widget.job)
-          .where("isTaken", isEqualTo: false)
+          .where("status", isEqualTo: "pending")
           .snapshots();
     }
   }
@@ -201,7 +201,7 @@ class _ProviderState extends State<ProviderDashboardPage> {
                             FirebaseAuth.instance.currentUser!.uid;
 
                         final activeTask = await FirebaseFirestore.instance
-                            .collection("Accepted Services")
+                            .collection("Orders")
                             .where("acceptedBy", isEqualTo: providerId)
                             .where("taskStatus", isEqualTo: "running")
                             .get();

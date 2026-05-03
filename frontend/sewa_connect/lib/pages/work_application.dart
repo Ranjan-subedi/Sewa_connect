@@ -236,89 +236,96 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              DottedBorder(
-                options: RoundedRectDottedBorderOptions(
-                  radius: const Radius.circular(12),
-                  dashPattern: const [6, 8],
-                  color: theme.primary,
-                  strokeWidth: 1.6,
-                ),
-                child: InkWell(
-                  onTap: _chooseImageSource,
-                  child: Container(
-                    height: 220,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: theme.surface,
-                    ),
-                    child: isUploading
-                        ? Center(
-                            child: Lottie.asset(
-                              "assets/lottie/LoadingElephant.json",
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : image == null
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: _chooseImageSource,
-                                icon: Icon(
-                                  Icons.cloud_upload_outlined,
-                                  size: 64,
-                                  color: theme.primary,
-                                ),
+              Center(
+                child: DottedBorder(
+                  options: CircularDottedBorderOptions(
+                    // radius: const Radius.circular(12),
+                    dashPattern: const [6, 8],
+                    color: theme.primary,
+                    strokeWidth: 1.6,
+                  ),
+                  child: InkWell(
+                    onTap: _chooseImageSource,
+                    child: Container(
+                      height: 220,
+                      width: 220,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+
+                        // borderRadius: BorderRadius.circular(12),
+                        color: theme.surface,
+                      ),
+                      child: isUploading
+                          ? Center(
+                              child: Lottie.asset(
+                                "assets/lottie/LoadingElephant.json",
+                                fit: BoxFit.cover,
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                "Tap to upload profile photo",
-                                style: TextStyle(
-                                  color: theme.primary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          )
-                        : SizedBox(
-                            height: 220,
-                            child: Stack(
+                            )
+                          : image == null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Positioned.fill(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.file(
-                                      image!,
-                                      fit: BoxFit.cover,
-                                    ),
+                                IconButton(
+                                  onPressed: _chooseImageSource,
+                                  icon: Icon(
+                                    Icons.cloud_upload_outlined,
+                                    size: 64,
+                                    color: theme.primary,
                                   ),
                                 ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: IconButton(
-                                    onPressed: _chooseImageSource,
-                                    icon: Icon(
-                                      Icons.edit,
-                                      color: theme.primary,
-                                    ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "Tap to upload profile photo",
+                                  style: TextStyle(
+                                    color: theme.primary,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
+                            )
+                          : SizedBox(
+                              height: 220,
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: ClipOval(
+                                      // borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        image!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton(
+                                      onPressed: _chooseImageSource,
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: theme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 18),
               _sectionTitle("Personal Details"),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               TextField(
                 autofocus: true,
                 controller: famousName,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.person, color: Theme.of(context).colorScheme.primary,),
                   hintText: "Your calling name",
                   labelText: "Name",
+                  labelStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: theme.surface,
                   border: OutlineInputBorder(
@@ -326,13 +333,15 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
               TextField(
                 keyboardType: TextInputType.number,
                 controller: phoneNumber,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.phone, color: Theme.of(context).colorScheme.primary,),
                   hintText: "9800000000",
                   labelText: "Phone number",
+                  labelStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: theme.surface,
                   border: OutlineInputBorder(
@@ -340,9 +349,10 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.business_center, color: Theme.of(context).colorScheme.primary,),
                   labelText: "Preferred job",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -350,7 +360,8 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
                   filled: true,
                   fillColor: theme.surface,
                 ),
-                hint: const Text("Choose your skill"),
+                hint: const Text("Choose your skill", style: TextStyle(color: Colors.grey),),
+
                 value: currentjobselected,
                 items: selectjob.map((e) {
                   return DropdownMenuItem<String>(value: e, child: Text(e));
@@ -363,11 +374,11 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
                 },
               ),
               const SizedBox(height: 20),
-              _docPlaceholder("Citizenship Card (Front)"),
+              _docPlaceholder("Citizenship Card (Front)", "upload front photo"),
               const SizedBox(height: 12),
-              _docPlaceholder("Citizenship Card (Back)"),
+              _docPlaceholder("Citizenship Card (Back)", "upload back photo"),
               const SizedBox(height: 12),
-              _docPlaceholder("Special Certificate"),
+              _docPlaceholder("Special Certificate", "upload your certificate"),
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: isUploading ? null : _submitApplication,
@@ -408,29 +419,44 @@ class _WorkApplicationPageState extends State<WorkApplicationPage> {
     );
   }
 
-  Widget _docPlaceholder(String title) {
+  Widget _docPlaceholder(String title, String subTitle) {
     return Container(
       height: 150,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
+        border: Border.all(
+
+        ),
         borderRadius: BorderRadius.circular(12),
         color: Colors.white38,
       ),
-      child: Row(
+      child: Column(
         children: [
+          Expanded(
+              flex: 2,
+              child: Icon(
+                Icons.panorama_photosphere,
+                color: Theme.of(context).colorScheme.primary,
+                size: 40,),),
           Expanded(
             child: Text(
               title,
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
           ),
-          SizedBox(
-            width: 90,
-            child: Lottie.asset(
-              'assets/lottie/loadingHand.json',
-              fit: BoxFit.cover,
+          Expanded(
+            child: Text(
+              subTitle,
+              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
             ),
           ),
+          // SizedBox(
+          //   width: 90,
+          //   child: Lottie.asset(
+          //     'assets/lottie/loadingHand.json',
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
         ],
       ),
     );

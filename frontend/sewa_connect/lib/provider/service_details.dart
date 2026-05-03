@@ -32,7 +32,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       if (providerId == null) return;
 
       final cancelledTasks = await FirebaseFirestore.instance
-          .collection("Accepted Services")
+          .collection("Orders")
           .where("cancelledBy", isEqualTo: providerId)
           .where("taskStatus", isEqualTo: "cancelled")
           .get();
@@ -69,7 +69,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       }
 
       final myTask = await FirebaseFirestore.instance
-          .collection("Accepted Services")
+          .collection("Orders")
           .where("acceptedBy", isEqualTo: providerId)
           .where("taskStatus", isEqualTo: "running")
           .get();
@@ -83,7 +83,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       }
 
       final taskRef = FirebaseFirestore.instance
-          .collection("Accepted Services")
+          .collection("Orders")
           .doc(widget.docId);
 
       final accepted = await FirebaseFirestore.instance.runTransaction<bool>((
@@ -100,6 +100,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         transaction.update(taskRef, {
           "acceptedBy": providerId,
           "isTaken": true,
+          "status": "accepted",
           "taskStatus": "running",
           "cancelledBy": null,
           "cancelledAt": null,
@@ -139,7 +140,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       ),
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: FirebaseFirestore.instance
-            .collection("Accepted Services")
+            .collection("Orders")
             .doc(widget.docId)
             .get(),
         builder: (context, snapshot) {

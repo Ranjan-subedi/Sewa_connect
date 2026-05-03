@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sewa_connect/pages/map.dart';
 import 'package:sewa_connect/pages/pick_map.dart';
 import 'package:sewa_connect/services/database_services.dart';
 import 'package:sewa_connect/services/geo_locator.dart';
@@ -223,7 +222,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
                         final position = await GeoLocatorServices()
                             .getCurrentLocation();
                         final double lat = position!.latitude;
-                        final double lon = position.longitude!;
+                        final double lon = position.longitude;
 
                         final selectedLocation = await Navigator.push(context, MaterialPageRoute(builder: (context) {
                           return PickMapPage(lat: lat, long: lon);
@@ -249,6 +248,9 @@ class _OrderServicesState extends State<OrderServicesPage> {
                               "longitude": selectedLocation!.longitude,
                             },
                             "status": "pending",
+                            "isTaken": false,
+                            "acceptedBy": null,
+                            "taskStatus": "pending",
                             "timestamp": DateTime.now(),
                           },
                         );

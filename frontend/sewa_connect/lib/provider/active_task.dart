@@ -20,7 +20,7 @@ class ActiveTaskPage extends StatelessWidget {
       ),
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: FirebaseFirestore.instance
-            .collection("Accepted Services")
+            .collection("Orders")
             .doc(docId)
             .get(),
         builder: (context, snapshot) {
@@ -125,9 +125,12 @@ class ActiveTaskPage extends StatelessWidget {
                   ),
                   onPressed: () async {
                     await FirebaseFirestore.instance
-                        .collection("Accepted Services")
+                        .collection("Orders")
                         .doc(docId)
-                        .update({"taskStatus": "completed"});
+                        .update({
+                          "taskStatus": "completed",
+                          "status": "completed",
+                        });
                     if (context.mounted) Navigator.pop(context);
                   },
                   icon: const Icon(Icons.check_circle_outline),
@@ -145,10 +148,11 @@ class ActiveTaskPage extends StatelessWidget {
                   ),
                   onPressed: () async {
                     await FirebaseFirestore.instance
-                        .collection("Accepted Services")
+                        .collection("Orders")
                         .doc(docId)
                         .update({
                           "taskStatus": "cancelled",
+                          "status": "pending",
                           "isTaken": false,
                           "acceptedBy": null,
                           "cancelledBy": FirebaseAuth.instance.currentUser?.uid,

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sewa_connect/pages/services_category.dart';
 import 'package:sewa_connect/services/database_services.dart';
@@ -18,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomepageState extends State<HomePage> {
   String? name;
+  XFile? profileImage;
 
   late ColorScheme theme;
 
@@ -36,6 +40,8 @@ class _HomepageState extends State<HomePage> {
   ];
 
   getOnTheLoad() async {
+
+
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     final savedName = await SharedPreferencesHelper().getName();
@@ -64,6 +70,7 @@ class _HomepageState extends State<HomePage> {
     );
 
     getOnTheLoad();
+
   }
 
   @override
@@ -79,8 +86,14 @@ class _HomepageState extends State<HomePage> {
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 26,
-                  child: Icon(Icons.person_outline),
+                  backgroundColor: Colors.black,
+                  child:profileImage != null ? Icon(Icons.person) :
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: Text('Sewa_connect',)),
+                  ),
                 ),
                 SizedBox(width: 10),
                 Expanded(
