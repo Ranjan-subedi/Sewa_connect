@@ -1,13 +1,12 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sewa_connect/pages/homepage.dart';
-import 'package:sewa_connect/pages/log_in_page.dart';
 import 'package:sewa_connect/pages/my_order.dart';
-import 'package:sewa_connect/pages/my_order.dart';
-import 'package:sewa_connect/pages/my_order.dart';
-import 'package:sewa_connect/pages/order_services.dart';
+import 'package:sewa_connect/pages/notifications_page.dart';
 import 'package:sewa_connect/pages/profile.dart';
+import 'package:sewa_connect/widget/notification_services.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -25,10 +24,13 @@ class _NavBarState extends State<NavBar> {
 
   int _selectedIndex = 0;
 
-    @override
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      NotificationServices().initialize(userId: uid);
+    }
     homepage = HomePage();
     profilePage = ProfilePage();
     myOrderPage = MyOrderPage();
@@ -58,7 +60,60 @@ class _NavBarState extends State<NavBar> {
       appBar: AppBar(
         title: Text(appbartitle!),
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primary
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        actions: [
+          StreamBuilder<int>(
+            stream: FirebaseAuth.instance.currentUser?.uid == null
+                ? null
+                : NotificationServices().unreadCount(
+                    FirebaseAuth.instance.currentUser!.uid,
+                  ),
+            builder: (context, snapshot) {
+              final count = snapshot.data ?? 0;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsPage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.notifications_outlined),
+                  ),
+                  if (count > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          count > 9 ? '9+' : '$count',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(

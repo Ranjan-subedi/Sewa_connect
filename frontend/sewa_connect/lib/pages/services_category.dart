@@ -74,6 +74,7 @@ class _ServicesCategoryPageState extends State<ServicesCategoryPage> {
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => OrderServicesPage(
+                                      providerRef: documentSnapshot.id,
                                       service: documentSnapshot["service"],
                                       name: documentSnapshot['name'],
                                       photo: documentSnapshot["photo"]),

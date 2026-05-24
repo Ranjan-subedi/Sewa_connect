@@ -115,17 +115,29 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                         ),
                                         onPressed: () async {
                                           final orderId = order[index].id;
+                                          final orderData =
+                                              order[index].data();
+                                          final userId =
+                                              orderData["userId"]?.toString();
+                                          final serviceName =
+                                              orderData["service"]
+                                                      ?.toString() ??
+                                                  "service";
+
                                           DatabaseServices().updateStatus(
                                             orderId,
                                           );
 
-                                          await NotificationServices()
-                                              .saveNotification(
-                                                title: "Service Accepted",
-                                                body:
-                                                    "Your service has been updated you will receive a call soon !",
-                                                userId: userId,
-                                              );
+                                          if (userId != null &&
+                                              userId.isNotEmpty) {
+                                            await NotificationServices()
+                                                .notifyOrderAccepted(
+                                              userId: userId,
+                                              byWhom: "Admin",
+                                              serviceName: serviceName,
+                                              orderId: orderId,
+                                            );
+                                          }
                                         },
                                         child: Text("Accept"),
                                       ),
@@ -150,22 +162,31 @@ class _MyOrderPageState extends State<AllOrderPage> {
                                               snapshot.data()
                                                   as Map<String, dynamic>;
                                           orderData["status"] = "rejected";
-                                          final userId = orderData["userId"];
+                                          final userId =
+                                              orderData["userId"]?.toString();
 
                                           // final status = orderData!["status"];
+
+                                          final serviceName =
+                                              orderData["service"]
+                                                      ?.toString() ??
+                                                  "service";
 
                                           await FirebaseFirestore.instance
                                               .collection("Orders")
                                               .doc(orderId)
                                               .update(orderData);
 
-                                          await NotificationServices()
-                                              .saveNotification(
-                                                title: "Service Rejected",
-                                                body:
-                                                    "your service is not available for now ",
-                                                userId: userId,
-                                              );
+                                          if (userId != null &&
+                                              userId.isNotEmpty) {
+                                            await NotificationServices()
+                                                .notifyOrderRejected(
+                                              userId: userId,
+                                              byWhom: "Admin",
+                                              serviceName: serviceName,
+                                              orderId: orderId,
+                                            );
+                                          }
 
                                           // DatabaseServices().deleteOrder(orderId: order[index].id);
                                         },

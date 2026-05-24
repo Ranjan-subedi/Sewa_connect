@@ -149,7 +149,6 @@ class _HomepageState extends State<HomePage> {
 
               final allServices = snapshot.data!.docs;
 
-              // 🔥 FIXED SEARCH LOGIC
               filteredServices = allServices.where((doc) {
                 final name = doc["name"].toString().toLowerCase();
                 return name.contains(searchText);
@@ -161,7 +160,6 @@ class _HomepageState extends State<HomePage> {
 
                   SizedBox(height: 10),
 
-                  // 🔥 SEARCH RESULT OR CAROUSEL
                   searchText.isNotEmpty
                       ? SizedBox(
                     height: 200,
@@ -262,7 +260,7 @@ class _HomepageState extends State<HomePage> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: Colors.deepPurple[300],
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         child: Column(
                           children: [

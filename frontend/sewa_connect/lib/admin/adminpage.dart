@@ -43,43 +43,43 @@ class _AdminPageState extends State<AdminPage> {
                   ),
                 ),
                 SizedBox(height: 10,),
-                Material(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  child: Container(
-                    height: 80,
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text("All Order"),
-                        Spacer(),
-                        IconButton(onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrderPage(),));
-                        },icon: Icon(Icons.reorder_sharp)),
-                        Spacer(),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Material(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  child: Container(
-                    height: 80,
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text("Accepted Order"),
-                        Spacer(),
-                        IconButton(onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AllAcceptedOrderPage(),));
-                        },icon: Icon(Icons.reorder_sharp)),
-                        Spacer()
-                      ],
-                    ),
-                  ),
-                ),
+                // Material(
+                //   borderRadius: BorderRadius.circular(12),
+                //   color: Colors.white,
+                //   child: Container(
+                //     height: 80,
+                //     child: Row(
+                //       children: [
+                //         Spacer(),
+                //         Text("All Order"),
+                //         Spacer(),
+                //         IconButton(onPressed: () {
+                //           Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrderPage(),));
+                //         },icon: Icon(Icons.reorder_sharp)),
+                //         Spacer(),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(height: 10,),
+                // Material(
+                //   borderRadius: BorderRadius.circular(12),
+                //   color: Colors.white,
+                //   child: Container(
+                //     height: 80,
+                //     child: Row(
+                //       children: [
+                //         Spacer(),
+                //         Text("Accepted Order"),
+                //         Spacer(),
+                //         IconButton(onPressed: () {
+                //           Navigator.push(context, MaterialPageRoute(builder: (context) => AllAcceptedOrderPage(),));
+                //         },icon: Icon(Icons.reorder_sharp)),
+                //         Spacer()
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
       ),

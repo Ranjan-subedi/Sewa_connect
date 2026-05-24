@@ -32,6 +32,29 @@ class DatabaseServices {
     await firebasefirestore.collection("Orders").add(data);
   }
 
+  Future<bool> isProviderFreeAtSlot({
+    required String providerRef,
+    required DateTime scheduleAt,
+  }) async {
+    final normalized = DateTime(
+      scheduleAt.year,
+      scheduleAt.month,
+      scheduleAt.day,
+      scheduleAt.hour,
+      scheduleAt.minute,
+    );
+
+    final slotSnapshot = await firebasefirestore
+        .collection("Orders")
+        .where("providerRef", isEqualTo: providerRef)
+        .where("scheduleAt", isEqualTo: Timestamp.fromDate(normalized))
+        .where("status", whereIn: ["pending", "accepted"])
+        .limit(1)
+        .get();
+
+    return slotSnapshot.docs.isEmpty;
+  }
+
   Future<void> deleteOrder({required String orderId}) async {
     await firebasefirestore.collection("Orders").doc(orderId).delete();
   }

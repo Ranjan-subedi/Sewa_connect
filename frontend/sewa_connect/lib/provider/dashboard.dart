@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:sewa_connect/provider/active_task.dart';
 import 'package:sewa_connect/provider/service_details.dart';
 import 'package:sewa_connect/services/geo_locator.dart';
+import 'package:sewa_connect/widget/notification_services.dart';
 
 class ProviderDashboardPage extends StatefulWidget {
   final String job;
@@ -63,8 +64,11 @@ class _ProviderState extends State<ProviderDashboardPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      NotificationServices().initialize(userId: uid);
+    }
     getMyLocation();
   }
 
@@ -184,7 +188,7 @@ class _ProviderState extends State<ProviderDashboardPage> {
                         .toDouble();
                     final double longitude = (location["longitude"] as num)
                         .toDouble();
-                    final dateTime = data["timestamp"];
+                    final scheduleAt = data["scheduleAt"];
 
                     double distance = Geolocator.distanceBetween(
                       myLat!,
@@ -322,12 +326,20 @@ class _ProviderState extends State<ProviderDashboardPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
+                                  Text(
+                                    "Scheduled",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: theme.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
                                   const Icon(Icons.schedule, size: 16),
                                   const SizedBox(height: 4),
                                   Text(
-                                    dateTime is Timestamp
-                                        ? _formatDateTime(dateTime)
-                                        : "-",
+                                    _formatSchedule(scheduleAt),
+                                    textAlign: TextAlign.end,
                                     style: const TextStyle(fontSize: 11),
                                   ),
                                   const SizedBox(height: 8),
@@ -353,8 +365,14 @@ class _ProviderState extends State<ProviderDashboardPage> {
     );
   }
 
-  String _formatDateTime(Timestamp ts) {
-    final dt = ts.toDate().toLocal();
+  String _formatSchedule(dynamic value) {
+    DateTime? dt;
+    if (value is Timestamp) {
+      dt = value.toDate().toLocal();
+    } else if (value is DateTime) {
+      dt = value.toLocal();
+    }
+    if (dt == null) return "-";
     final date =
         "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
     final time =

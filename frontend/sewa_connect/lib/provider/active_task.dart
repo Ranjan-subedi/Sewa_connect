@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/widget/notification_services.dart';
 
 class ActiveTaskPage extends StatelessWidget {
   final String docId;
@@ -36,6 +37,7 @@ class ActiveTaskPage extends StatelessWidget {
           final serviceName = data["service"]?.toString() ?? "Service";
           final phone = data["phone"]?.toString() ?? "-";
           final address = data["address"]?.toString() ?? "-";
+          final scheduledAt = _formatSchedule(data["scheduleAt"]);
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -109,6 +111,12 @@ class ActiveTaskPage extends StatelessWidget {
                           address,
                           Icons.location_on_outlined,
                         ),
+                        const Divider(height: 22),
+                        _infoRow(
+                          "Scheduled",
+                          scheduledAt,
+                          Icons.event_outlined,
+                        ),
                       ],
                     ),
                   ),
@@ -124,13 +132,31 @@ class ActiveTaskPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
-                    await FirebaseFirestore.instance
+                    final orderRef = FirebaseFirestore.instance
                         .collection("Orders")
-                        .doc(docId)
-                        .update({
-                          "taskStatus": "completed",
-                          "status": "completed",
-                        });
+                        .doc(docId);
+                    final orderSnap = await orderRef.get();
+                    final orderData = orderSnap.data();
+                    final customerId = orderData?["userId"]?.toString();
+                    final providerName =
+                        orderData?["acceptedByName"]?.toString() ?? "Provider";
+                    final serviceName =
+                        orderData?["service"]?.toString() ?? "service";
+
+                    await orderRef.update({
+                      "taskStatus": "completed",
+                      "status": "completed",
+                    });
+
+                    if (customerId != null && customerId.isNotEmpty) {
+                      await NotificationServices().notifyWorkFinished(
+                        userId: customerId,
+                        byWhom: providerName,
+                        serviceName: serviceName,
+                        orderId: docId,
+                      );
+                    }
+
                     if (context.mounted) Navigator.pop(context);
                   },
                   icon: const Icon(Icons.check_circle_outline),
@@ -147,17 +173,36 @@ class ActiveTaskPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
-                    await FirebaseFirestore.instance
+                    final orderRef = FirebaseFirestore.instance
                         .collection("Orders")
-                        .doc(docId)
-                        .update({
-                          "taskStatus": "cancelled",
-                          "status": "pending",
-                          "isTaken": false,
-                          "acceptedBy": null,
-                          "cancelledBy": FirebaseAuth.instance.currentUser?.uid,
-                          "cancelledAt": FieldValue.serverTimestamp(),
-                        });
+                        .doc(docId);
+                    final orderSnap = await orderRef.get();
+                    final orderData = orderSnap.data();
+                    final customerId = orderData?["userId"]?.toString();
+                    final providerName =
+                        orderData?["acceptedByName"]?.toString() ?? "Provider";
+                    final serviceName =
+                        orderData?["service"]?.toString() ?? "service";
+
+                    await orderRef.update({
+                      "taskStatus": "cancelled",
+                      "status": "pending",
+                      "isTaken": false,
+                      "acceptedBy": null,
+                      "acceptedByName": null,
+                      "cancelledBy": FirebaseAuth.instance.currentUser?.uid,
+                      "cancelledAt": FieldValue.serverTimestamp(),
+                    });
+
+                    if (customerId != null && customerId.isNotEmpty) {
+                      await NotificationServices().notifyProviderCancelled(
+                        userId: customerId,
+                        byWhom: providerName,
+                        serviceName: serviceName,
+                        orderId: docId,
+                      );
+                    }
+
                     if (context.mounted) Navigator.pop(context);
                   },
                   icon: const Icon(Icons.cancel_outlined),
@@ -169,6 +214,21 @@ class ActiveTaskPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _formatSchedule(dynamic value) {
+    DateTime? dt;
+    if (value is Timestamp) {
+      dt = value.toDate().toLocal();
+    } else if (value is DateTime) {
+      dt = value.toLocal();
+    }
+    if (dt == null) return "Not set";
+    final date =
+        "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
+    final time =
+        "${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+    return "$date at $time";
   }
 
   Widget _infoRow(String title, String value, IconData icon) {

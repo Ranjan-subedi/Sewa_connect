@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/widget/notification_services.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
   final String photo;
@@ -99,6 +100,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         }
         transaction.update(taskRef, {
           "acceptedBy": providerId,
+          "acceptedByName": widget.providerName,
           "isTaken": true,
           "status": "accepted",
           "taskStatus": "running",
@@ -114,6 +116,19 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           context,
         ).showSnackBar(const SnackBar(content: Text("Already accepted !")));
         return;
+      }
+
+      final orderSnap = await taskRef.get();
+      final orderData = orderSnap.data();
+      final customerId = orderData?["userId"]?.toString();
+      final serviceName = orderData?["service"]?.toString() ?? "service";
+      if (customerId != null && customerId.isNotEmpty) {
+        await NotificationServices().notifyOrderAccepted(
+          userId: customerId,
+          byWhom: widget.providerName,
+          serviceName: serviceName,
+          orderId: widget.docId,
+        );
       }
 
       ScaffoldMessenger.of(
@@ -156,6 +171,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           final phone = data["phone"]?.toString() ?? "-";
           final service = data["service"]?.toString() ?? "-";
           final address = data["address"]?.toString() ?? "-";
+          final scheduledAt = _formatSchedule(data["scheduleAt"]);
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -242,6 +258,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                           "Address",
                           address,
                         ),
+                        const Divider(height: 20),
+                        _infoRow(
+                          Icons.event_outlined,
+                          "Scheduled",
+                          scheduledAt,
+                        ),
                       ],
                     ),
                   ),
@@ -275,6 +297,21 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         },
       ),
     );
+  }
+
+  String _formatSchedule(dynamic value) {
+    DateTime? dt;
+    if (value is Timestamp) {
+      dt = value.toDate().toLocal();
+    } else if (value is DateTime) {
+      dt = value.toLocal();
+    }
+    if (dt == null) return "Not set";
+    final date =
+        "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
+    final time =
+        "${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+    return "$date at $time";
   }
 
   Widget _infoRow(IconData icon, String label, String value) {

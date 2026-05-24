@@ -10,12 +10,14 @@ class OrderServicesPage extends StatefulWidget {
   final String name;
   final String photo;
   final String service;
+  final String providerRef;
 
   const OrderServicesPage({
     super.key,
     required this.name,
     required this.service,
     required this.photo,
+    required this.providerRef,
   });
 
   @override
@@ -24,6 +26,7 @@ class OrderServicesPage extends StatefulWidget {
 
 class _OrderServicesState extends State<OrderServicesPage> {
   String? email;
+  DateTime? selectedSchedule;
 
   getSharedPrefs() async {
     email = await SharedPreferencesHelper().getEmail();
@@ -55,6 +58,52 @@ class _OrderServicesState extends State<OrderServicesPage> {
     // TODO: implement initState
     super.initState();
     getSharedPrefs();
+  }
+
+  Future<void> _pickSchedule() async {
+    final now = DateTime.now();
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 30)),
+    );
+    if (pickedDate == null) return;
+
+    if (!mounted) return;
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime == null) return;
+
+    final merged = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    if (merged.isBefore(now)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select a future time")),
+      );
+      return;
+    }
+
+    setState(() {
+      selectedSchedule = merged;
+    });
+  }
+
+  String _formatSchedule(DateTime dateTime) {
+    final d =
+        "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    final t =
+        "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+    return "$d $t";
   }
 
   @override
@@ -219,6 +268,33 @@ class _OrderServicesState extends State<OrderServicesPage> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () async {
+                        if (selectedSchedule == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please choose a schedule first"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final isFree = await DatabaseServices()
+                            .isProviderFreeAtSlot(
+                              providerRef: widget.providerRef,
+                              scheduleAt: selectedSchedule!,
+                            );
+
+                        if (!isFree) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Provider is not free at this time. Please choose another slot.",
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
                         final position = await GeoLocatorServices()
                             .getCurrentLocation();
                         final double lat = position!.latitude;
@@ -237,6 +313,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
                         await DatabaseServices().setOrder(
                           data: {
                             "userId": userId,
+                            "providerRef": widget.providerRef,
                             "name": widget.name,
                             "service": widget.service,
                             "phone": "9864388822",
@@ -251,6 +328,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
                             "isTaken": false,
                             "acceptedBy": null,
                             "taskStatus": "pending",
+                            "scheduleAt": selectedSchedule,
                             "timestamp": DateTime.now(),
                           },
                         );
@@ -266,6 +344,25 @@ class _OrderServicesState extends State<OrderServicesPage> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _pickSchedule,
+                icon: const Icon(Icons.schedule),
+                label: Text(
+                  selectedSchedule == null
+                      ? "Choose Schedule"
+                      : "Scheduled: ${_formatSchedule(selectedSchedule!)}",
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ],
           ),
