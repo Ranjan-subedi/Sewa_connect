@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,16 @@ class _HomepageState extends State<HomePage> {
   List<QueryDocumentSnapshot> filteredServices = [];
 
   List<Widget> caurasolItems = [
-    Lottie.asset('assets/lottie/LoadingElephant.json'),
-    Container(color: Colors.red, height: 200),
-    Lottie.asset('assets/lottie/loadingHand.json'),
-    Container(color: Colors.lightBlue, height: 200),
-    Lottie.asset('assets/lottie/Sandy_Loading.json'),
-    Container(color: Colors.lightGreen, height: 200),
+    // Image.asset("assets/banner/banner.jpg"),
+    // Image.asset("assets/banner/banner2.jpg"),
+    Image.asset("assets/banner/banner4.jpg"),
+    Image.asset("assets/banner/banner6.jpg"),
+    // Lottie.asset('assets/lottie/LoadingElephant.json'),
+    // Container(color: Colors.red, height: 200),
+    // Lottie.asset('assets/lottie/loadingHand.json'),
+    // Container(color: Colors.lightBlue, height: 200),
+    // Lottie.asset('assets/lottie/Sandy_Loading.json'),
+    // Container(color: Colors.lightGreen, height: 200),
   ];
 
   getOnTheLoad() async {
@@ -156,7 +161,8 @@ class _HomepageState extends State<HomePage> {
 
               return Column(
                 children: [
-                  Text("Trending Services"),
+                  Text("Our Features",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
 
                   SizedBox(height: 10),
 
@@ -174,11 +180,17 @@ class _HomepageState extends State<HomePage> {
                           margin: EdgeInsets.all(8),
                           child: Card(
                             child: ListTile(
-                              leading: Lottie.network(
-                                service["photo"],
-                                height: 50,
-                                width: 50,
-                              ),
+                              leading:
+                                  CachedNetworkImage(
+                                    imageUrl: service["photo"],
+                                    placeholder: (context, url) => CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                  ),
+                              // Lottie.network(
+                              //   service["photo"],
+                              //   height: 50,
+                              //   width: 50,
+                              // ),
                               title: Text(service["name"]),
                               subtitle: Text("Tap to book"),
                               onTap: () {
@@ -260,13 +272,14 @@ class _HomepageState extends State<HomePage> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         child: Column(
                           children: [
-                            Lottie.network(
+                            Image.network(
+                              // fit: BoxFi,
                               photo,
-                              height: 150,
+                              height: 190,
                               width: 180,
                             ),
                             Text(jobTitle),

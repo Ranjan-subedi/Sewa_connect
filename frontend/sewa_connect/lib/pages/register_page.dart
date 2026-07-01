@@ -1,4 +1,3 @@
-
 import 'package:cloudinary_flutter/video/analytics/video_analytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   bool isLoading = false;
   bool obsecureTextConfirmPassword = true;
   bool obsecureTextPassword = true;
@@ -34,10 +32,6 @@ class _RegisterPageState extends State<RegisterPage> {
   FocusNode confirmPasswordNode = FocusNode();
   FocusNode submitNode = FocusNode();
 
-
-
-
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
     // emailFirst();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FocusScope.of(context).requestFocus(nameNode);
-    },);
+    });
   }
 
   @override
@@ -68,39 +62,40 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  registerUser()async{
+  registerUser() async {
     setState(() {
       isLoading = true;
     });
 
-    try{
-       final  data  = UserModel(
-           name: nameController.text.trim(),
-           email: emailController.text.trim().toLowerCase(),
-           password: passwordController.text.trim());
+    try {
+      final data = UserModel(
+        name: nameController.text.trim(),
+        email: emailController.text.trim().toLowerCase(),
+        password: passwordController.text.trim(),
+      );
 
-       print("email : ${data.name} \n name : ${data.name}");
+      print("email : ${data.name} \n name : ${data.name}");
 
-       await auth.signIn(registrationDetail: data);
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Register Successful')));
-
-
-
-    }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Register failed $e')));
-    }finally{
+      await auth.signIn(registrationDetail: data);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Register Successful')));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Register failed $e')));
+    } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
 
-  firebaseRegister()async{
-    FirebaseAuthServices().register
-      (
-        name: nameController.text.trim(),
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+  firebaseRegister() async {
+    FirebaseAuthServices().register(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
     );
   }
 
@@ -151,7 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Name",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -190,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -226,13 +221,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: passwordController,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(onPressed:() {
-                        setState(() {
-                          obsecureTextPassword = !obsecureTextPassword;
-                        });
-                      }, icon: Icon(Icons.remove_red_eye)),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obsecureTextPassword = !obsecureTextPassword;
+                          });
+                        },
+                        icon: Icon(Icons.remove_red_eye),
+                      ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -257,7 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       FocusScope.of(context).requestFocus(submitNode);
                     },
                     validator: (value) {
-                      if(passwordController.text != value){
+                      if (passwordController.text != value) {
                         return "Password is not match";
                       }
                       if (value == null || value.isEmpty) {
@@ -268,13 +266,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: confirmPasswordController,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(onPressed: () {
-                        setState(() {
-                          obsecureTextConfirmPassword = !obsecureTextConfirmPassword;
-                        });
-                      }, icon: Icon(Icons.remove_red_eye)),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obsecureTextConfirmPassword =
+                                !obsecureTextConfirmPassword;
+                          });
+                        },
+                        icon: Icon(Icons.remove_red_eye),
+                      ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Comform Password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -289,26 +291,37 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 70,
                   child: Row(
                     children: [
-                      RichText(text: TextSpan(
+                      RichText(
+                        text: TextSpan(
                           children: [
                             TextSpan(
-                                text: "Already have an account?  ",
-                                style: TextStyle(color: Theme.of(context).colorScheme.primary)
+                              text: "Already have an account?  ",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
                             TextSpan(
-                              recognizer: TapGestureRecognizer()..onTap= (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => LogInPage(),));
-                              },
-                                text: "Login",
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    decorationThickness: 2,
-                                    color: Theme.of(context).colorScheme.primary)
-                            )
-                          ]
-                      ))
-                      // Text("Don't have an account?"),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LogInPage(),
+                                    ),
+                                  );
+                                },
+                              text: "Login",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationThickness: 2,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
+                      // Text("Don't have an account?"),
                     ],
                   ),
                 ),
@@ -324,8 +337,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       shape: RoundedRectangleBorder(),
                     ),
-                    onPressed: ()async {
-                      if(formKey.currentState!.validate()){
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
                         print("Email: ${emailController.text}");
                         print("Password: ${passwordController.text}");
 

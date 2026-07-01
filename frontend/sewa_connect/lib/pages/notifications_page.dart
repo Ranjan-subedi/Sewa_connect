@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/pages/rate_service_page.dart';
 import 'package:sewa_connect/widget/notification_services.dart';
 
 class NotificationsPage extends StatelessWidget {
@@ -103,6 +104,7 @@ class NotificationsPage extends StatelessWidget {
                     final byWhom = data['byWhom']?.toString();
                     final type = data['type']?.toString();
                     final isRead = data['isRead'] == true;
+                    final orderId = data['orderId']?.toString();
                     final ts = data['timestamp'];
 
                     return Dismissible(
@@ -117,8 +119,21 @@ class NotificationsPage extends StatelessWidget {
                         child: const Icon(Icons.done, color: Colors.white),
                       ),
                       child: InkWell(
-                        onTap: () =>
-                            NotificationServices().markAsRead(doc.id),
+                        onTap: () async {
+                          await NotificationServices().markAsRead(doc.id);
+                          if (type == 'completed' &&
+                              orderId != null &&
+                              orderId.isNotEmpty &&
+                              context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RateServicePage(orderId: orderId),
+                              ),
+                            );
+                          }
+                        },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),
                           padding: const EdgeInsets.all(14),

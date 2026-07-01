@@ -19,6 +19,7 @@ class LogInPage extends StatefulWidget {
 
 class _LogInPageState extends State<LogInPage> {
   Auth auth = Auth();
+  bool obsecure = true;
 
 
   late GlobalKey<FormState> formKey;
@@ -135,7 +136,16 @@ class _LogInPageState extends State<LogInPage> {
                     },
                     controller: passwordController,
                     textInputAction: TextInputAction.done,
+                    obscureText: obsecure,
                     decoration: InputDecoration(
+                      suffixIcon: GestureDetector(
+                        child: obsecure ? Icon(Icons.remove_moderator) : Icon(Icons.shield),
+                        onTap: (){
+                          setState(() {
+                            obsecure = !obsecure;
+                          });
+                        },
+                      ),
                       filled: true,
                       fillColor: Colors.grey[300],
                       labelText: "Password",
@@ -162,7 +172,7 @@ class _LogInPageState extends State<LogInPage> {
                           ),
                           TextSpan(
                             recognizer: TapGestureRecognizer()..onTap=(){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage(),));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage(),));
                             },
                               text: "Register",
                               style: TextStyle(

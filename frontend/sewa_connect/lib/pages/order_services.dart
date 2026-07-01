@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/pages/pick_map.dart';
@@ -152,6 +153,9 @@ class _OrderServicesState extends State<OrderServicesPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
+
+
                       Text(
                         "Reviews",
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -159,29 +163,116 @@ class _OrderServicesState extends State<OrderServicesPage> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          // Display stars
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            "5",
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                        stream: FirebaseFirestore.instance
+                            .collection("Services")
+                            .doc(widget.service)
+                            .collection("providers")
+                            .doc(widget.providerRef)
+                            .snapshots(),
+                        builder: (context, providerSnap) {
+                          final avg =
+                              (providerSnap.data?.data()?["averageRating"]
+                                      as num?)
+                                  ?.toDouble() ??
+                              0;
+                          final count =
+                              (providerSnap.data?.data()?["reviewCount"]
+                                      as num?)
+                                  ?.toInt() ??
+                              0;
+
+                          return Row(
+                            children: [
+                              ...List.generate(5, (index) {
+                                return Icon(
+                                  index < avg.round()
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  color: Colors.amber,
+                                  size: 20,
+                                );
+                              }),
+                              const SizedBox(width: 8),
+                              Text(
+                                avg > 0 ? avg.toStringAsFixed(1) : "No ratings",
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (count > 0) ...[
+                                const SizedBox(width: 6),
+                                Text(
+                                  "($count)",
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${widget.name} is very professional and completes work on time. Highly recommended!",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[700],
+                      const SizedBox(height: 12),
+                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: DatabaseServices().providerReviews(
+                          providerRef: widget.providerRef,
+                          service: widget.service,
                         ),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: LinearProgressIndicator(),
+                            );
+                          }
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
+                            return Text(
+                              "No reviews yet. Be the first to book and rate!",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey[700],
+                              ),
+                            );
+                          }
+
+                          final reviews = snapshot.data!.docs.take(3).toList();
+                          return Column(
+                            children: reviews.map((doc) {
+                              final data = doc.data();
+                              final rating =
+                                  (data["rating"] as num?)?.toInt() ?? 0;
+                              final text = data["review"]?.toString() ?? "";
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: List.generate(5, (index) {
+                                        return Icon(
+                                          index < rating
+                                              ? Icons.star
+                                              : Icons.star_border,
+                                          color: Colors.amber,
+                                          size: 16,
+                                        );
+                                      }),
+                                    ),
+                                    if (text.isNotEmpty) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        text,
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(color: Colors.grey[700]),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -300,15 +391,21 @@ class _OrderServicesState extends State<OrderServicesPage> {
                         final double lat = position!.latitude;
                         final double lon = position.longitude;
 
-                        final selectedLocation = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return PickMapPage(lat: lat, long: lon);
-                        },));
+                        final selectedLocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return PickMapPage(lat: lat, long: lon);
+                            },
+                          ),
+                        );
 
                         if (selectedLocation == null) {
-                          return ;
+                          return;
                         }
 
-                        final userId = await FirebaseAuth.instance.currentUser!.uid;
+                        final userId =
+                            await FirebaseAuth.instance.currentUser!.uid;
 
                         await DatabaseServices().setOrder(
                           data: {
@@ -328,6 +425,7 @@ class _OrderServicesState extends State<OrderServicesPage> {
                             "isTaken": false,
                             "acceptedBy": null,
                             "taskStatus": "pending",
+                            "isReviewed": false,
                             "scheduleAt": selectedSchedule,
                             "timestamp": DateTime.now(),
                           },

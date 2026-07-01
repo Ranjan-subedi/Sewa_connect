@@ -50,7 +50,8 @@ class _SplashPageState extends State<SplashPage> {
           decoration: BoxDecoration(color: Colors.black45),
           child: Column(
             children: [
-              Lottie.asset('assets/lottie/Sandy_Loading.json',filterQuality: FilterQuality.high, height: 600),
+              Lottie.asset('assets/lottie/Sandy_Loading.json',
+                  filterQuality: FilterQuality.high, height: 600),
               SizedBox(height: 20),
               Text(
                 'Sewa Connect',

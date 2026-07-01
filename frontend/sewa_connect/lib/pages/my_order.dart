@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_connect/pages/map.dart';
+import 'package:sewa_connect/pages/rate_service_page.dart';
 import 'package:sewa_connect/services/database_services.dart';
 import 'package:sewa_connect/services/sharedpreferences.dart';
 
@@ -166,6 +167,8 @@ class _MyOrderPageState extends State<MyOrderPage> {
                             final address = data["address"]?.toString() ?? "-";
                             final status =
                                 data["status"]?.toString() ?? "pending";
+                            final isReviewed = data["isReviewed"] == true;
+                            final orderId = orders[index].id;
                             final location = data["Location"];
                             final scheduled = _formatSchedule(
                               data["scheduleAt"],
@@ -272,6 +275,39 @@ class _MyOrderPageState extends State<MyOrderPage> {
                                               color: theme.primary.withAlpha(
                                                 100,
                                               ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    if (status.toLowerCase() == "completed" &&
+                                        !isReviewed) ...[
+                                      const SizedBox(height: 14),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RateServicePage(
+                                                  orderId: orderId,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.star_outline),
+                                          label: const Text("Rate Service"),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: theme.secondary,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         ),

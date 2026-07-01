@@ -146,6 +146,7 @@ class ActiveTaskPage extends StatelessWidget {
                     await orderRef.update({
                       "taskStatus": "completed",
                       "status": "completed",
+                      "isReviewed": false,
                     });
 
                     if (customerId != null && customerId.isNotEmpty) {
