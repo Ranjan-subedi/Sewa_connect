@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_connect/admin/admin_login.dart';
 import 'package:sewa_connect/model/userModel.dart';
 import 'package:sewa_connect/pages/register_page.dart';
 import 'package:sewa_connect/services/auth.dart';
+import 'package:sewa_connect/services/firebase_auth.dart';
 import 'package:sewa_connect/services/sharedpreferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'nav_bar.dart';
@@ -16,6 +19,7 @@ class LogInPage extends StatefulWidget {
 
 class _LogInPageState extends State<LogInPage> {
   Auth auth = Auth();
+  bool obsecure = true;
 
 
   late GlobalKey<FormState> formKey;
@@ -101,7 +105,7 @@ class _LogInPageState extends State<LogInPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -132,9 +136,18 @@ class _LogInPageState extends State<LogInPage> {
                     },
                     controller: passwordController,
                     textInputAction: TextInputAction.done,
+                    obscureText: obsecure,
                     decoration: InputDecoration(
+                      suffixIcon: GestureDetector(
+                        child: obsecure ? Icon(Icons.remove_moderator) : Icon(Icons.shield),
+                        onTap: (){
+                          setState(() {
+                            obsecure = !obsecure;
+                          });
+                        },
+                      ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey[300],
                       labelText: "Password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -159,7 +172,7 @@ class _LogInPageState extends State<LogInPage> {
                           ),
                           TextSpan(
                             recognizer: TapGestureRecognizer()..onTap=(){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage(),));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage(),));
                             },
                               text: "Register",
                               style: TextStyle(
@@ -191,24 +204,55 @@ class _LogInPageState extends State<LogInPage> {
                         print("Password: ${passwordController.text}");
 
                         try{
-                          final result = await auth.logIn(context: context, loginDetail:  LogInModel(
-
-                            email: emailController.text.trim().toLowerCase(),
-                            password: passwordController.text.trim()
-                        ));
-
-                        if(!mounted){return ;}
-                        print(result);
-                        if(result != null) {
+                          final response = await FirebaseAuthServices().login
+                            (
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim()
+                          );
 
                           await SharedPreferencesHelper().setLoginState(state: true);
+                          await SharedPreferencesHelper().saveEmail(email: emailController.text.trim());
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Login Successful')));
+                          print(SharedPreferencesHelper().getLoginState());
 
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => NavBar(),));
-                        }
+                          if(response == null){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Login Successful'))
+                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => NavBar())
+                            );
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(response))
+                            );
+                          }
+
+
+
+
+
+                        //
+                        //   final result = await auth.logIn(context: context, loginDetail:  LogInModel(
+                        //
+                        //     email: emailController.text.trim().toLowerCase(),
+                        //     password: passwordController.text.trim()
+                        // ));
+                        //
+                        // if(!mounted){return ;}
+                        // print(result);
+                        // if(result != null) {
+                        //
+                        //   await SharedPreferencesHelper().setLoginState(state: true);
+                        //
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(content: Text('Login Successful')));
+                        //
+                        //   Navigator.push(context, MaterialPageRoute(
+                        //     builder: (context) => NavBar(),));
+                        // }
+
                         }catch(e){
                           if(!mounted){return ;}
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed $e')));
@@ -225,7 +269,13 @@ class _LogInPageState extends State<LogInPage> {
             ),
           ),
         ),
+
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Text("admin"),
+        onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLogInPage(),));
+      },),
     );
   }
 }
